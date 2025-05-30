@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static EventDefine;
 
 public class PeopleFindHole : MonoBehaviour
 {
@@ -14,9 +15,31 @@ public class PeopleFindHole : MonoBehaviour
     public Node target;
     public Node currentNode;
 
-    private void Start()
+    [Header("Tag Group")]
+    public string tagGroup;
+
+    private void OnEnable()
     {
-        Invoke(nameof(Setup), 0.5f); // dùng nameof cho an toàn refactor
+        EventDispatcher.Add<EventDefine.OnPeopleFindHole>(OnPeopleFindHole);
+    }
+
+    private void OnDisable()
+    {
+        EventDispatcher.Remove<EventDefine.OnPeopleFindHole>(OnPeopleFindHole);
+    }
+
+    private void OnPeopleFindHole(IEventParam param)
+    {
+        if (param is OnPeopleFindHole peopleFindHoleEvent)
+        {
+            this.target = peopleFindHoleEvent.target;
+            string tag = peopleFindHoleEvent.tag;
+
+            if (target != null && tagGroup == tag)
+            {
+                Setup();
+            }
+        }
     }
 
     void Setup()
@@ -94,19 +117,19 @@ public class PeopleFindHole : MonoBehaviour
     {
         if (frontierNodes.Count <= 0)
         {
-            Debug.LogError("Không có node lân cận để bắt đầu.");
+            Debug.LogWarning("Cout frontier by zero");
             return false;
         }
 
         if (target == player)
         {
-            Debug.LogWarning("Player và Target trùng nhau.");
+            Debug.LogWarning("One Block");
             return true;
         }
 
         if (frontierNodes.Contains(target))
         {
-            Debug.Log("Target là lân cận trực tiếp của player.");
+            Debug.LogWarning("Zero Block");
             target.previousNode = currentNode;
             return true;
         }
@@ -117,7 +140,7 @@ public class PeopleFindHole : MonoBehaviour
 
             if (currentNode == null)
             {
-                Debug.LogError("Không tìm thấy đường đi đến Target.");
+                Debug.LogWarning("Không tìm thấy đường đi đến Target.");
                 return false;
             }
 

@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using static EventDefine;
 
 public class Node : MonoBehaviour
 {
@@ -11,46 +10,77 @@ public class Node : MonoBehaviour
     public float hCost;
 
     public float FCost => gCost + hCost;
-
     public Node previousNode;
-
     public List<Node> neighbors = new List<Node>();
-
     public Vector3 position;
     public bool isObstacle = false;
 
-    private void Start()
+    private void OnEnable()
     {
-        this.position = transform.position;
-        neighbors = new List<Node>();
+        EventDispatcher.Add<OnClickHole>(OnClickHole);
+    }
 
-        // Định nghĩa các hướng (offset) theo 4 hướng chính
-        Vector3[] directions = new Vector3[]
+    private void OnDisable()
+    {
+        EventDispatcher.Remove<OnClickHole>(OnClickHole);
+    }
+
+    private void OnClickHole(IEventParam param)
+    {
+        if (param is OnClickHole clickHoleEvent)
         {
-        Vector3.forward,   // trước
-        Vector3.back,      // sau
-        Vector3.left,      // trái
-        Vector3.right      // phải
-        };
+            gameObject.GetComponent<Renderer>().material.color = Color.white;
+            string tag = clickHoleEvent.tag;
 
-        float offsetDistance = 1f; // khoảng cách tìm kiếm
+            position = transform.position;
+            neighbors.Clear();
+            gCost = 0;
+            hCost = 0;
+            isObstacle = false;
 
-        foreach (var dir in directions)
-        {
-            Vector3 checkPos = transform.position + dir * offsetDistance;
+            Vector3[] directions = {
+                Vector3.forward,
+                Vector3.back,
+                Vector3.left,
+                Vector3.right
+            };
 
-            // Sử dụng OverlapSphere nhỏ để kiểm tra xem có Node tại vị trí này không
-            Collider[] hits = Physics.OverlapSphere(checkPos, 0.1f); // bán kính nhỏ, chỉ kiểm tra gần đúng điểm đó
+            float offsetDistance = 1f;
+            Vector3 currentPos = transform.position;
 
-            foreach (var hit in hits)
+            // Tìm các Node lân cận
+            foreach (var dir in directions)
             {
-                Node node = hit.GetComponent<Node>();
-                if (node != null && node != this && !neighbors.Contains(node))
+                Vector3 checkPos = currentPos + dir * offsetDistance;
+
+                foreach (var hit in Physics.OverlapSphere(checkPos, 0.1f))
                 {
-                    neighbors.Add(node);
+                    Node node = hit.GetComponent<Node>();
+                    if (node != null && node != this && !neighbors.Contains(node))
+                    {
+                        neighbors.Add(node);
+                    }
                 }
+            }
+
+            // ❗ Chỉ kiểm tra vật thể phía trên node hiện tại
+            if (IsBlockedAbove(currentPos, tag))
+            {
+                isObstacle = true;
             }
         }
     }
 
+    private bool IsBlockedAbove(Vector3 position, string tag)
+    {
+        Vector3 origin = position + Vector3.up * 0.1f;
+        Ray ray = new Ray(origin, Vector3.up);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 0.5f))
+        {
+            return !hit.collider.CompareTag(tag);
+        }
+
+        return false;
+    }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -27,7 +28,6 @@ public class PeopleManager : MonoBehaviour
         }
 
         allPeople = foundPeople.ToArray();
-        Debug.Log($"Tìm thấy {allPeople.Length} người trong layer 'People'.");
     }
 
     void SetupGroups()
@@ -42,8 +42,6 @@ public class PeopleManager : MonoBehaviour
 
             groups[tag].Add(person);
         }
-
-        Debug.Log($"Đã phân chia {allPeople.Length} người thành {groups.Count} nhóm dựa trên tag.");
     }
 
     void Update()
@@ -61,13 +59,42 @@ public class PeopleManager : MonoBehaviour
 
                     if (groups.ContainsKey(groupTag))
                     {
-                        Vector3 targetPosition = hit.collider.gameObject.transform.position;
-                        MoveGroup(groupTag, targetPosition);
+                        StartCoroutine(HandleClickHole(hit.collider.gameObject, groupTag));
                     }
                 }
             }
         }
     }
+
+    private IEnumerator HandleClickHole(GameObject holeObject, string groupTag)
+    {
+        Debug.Log("groupTag: " + groupTag);
+
+        // Gửi sự kiện click hole
+        EventDispatcher.Dispatch(new EventDefine.OnClickHole { tag = groupTag });
+
+        // Chờ 1 frame để các listener phản hồi
+        yield return null;
+
+        // Sau khi listener xử lý xong, tiếp tục kiểm tra Node bên dưới
+        Vector3 checkPosBelow = holeObject.transform.position + Vector3.down;
+        Collider[] hits = Physics.OverlapSphere(checkPosBelow, 0.1f, LayerMask.GetMask("Block"));
+
+        foreach (var hitBelow in hits)
+        {
+            Node nodeBelow = hitBelow.GetComponent<Node>();
+            if (nodeBelow != null)
+            {
+                EventDispatcher.Dispatch(new EventDefine.OnPeopleFindHole
+                {
+                    tag = groupTag,
+                    target = nodeBelow
+                });
+                break;
+            }
+        }
+    }
+
 
     public void MoveGroup(string groupName, Vector3 target)
     {
