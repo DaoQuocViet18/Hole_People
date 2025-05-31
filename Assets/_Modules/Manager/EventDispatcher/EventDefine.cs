@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using UnityEngine;
 
 public partial class EventDefine : IEventParam
@@ -8,6 +9,7 @@ public partial class EventDefine : IEventParam
     {
         public string tag;
     }
+
     public struct OnPeopleFindHole: IEventParam {
         public string tag;
         public Node target; 

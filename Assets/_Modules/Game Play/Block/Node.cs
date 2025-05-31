@@ -6,14 +6,22 @@ using static EventDefine;
 public class Node : MonoBehaviour
 {
     [Header("Node Information")]
-    public float gCost;
-    public float hCost;
+    private float gCost;
+    private float hCost;
+    public float GCost { get => gCost; set => gCost = value; }
+    public float HCost { get => hCost; set => hCost = value; }
+    public float FCost => GCost + HCost;
 
-    public float FCost => gCost + hCost;
-    public Node previousNode;
-    public List<Node> neighbors = new List<Node>();
-    public Vector3 position;
-    public bool isObstacle = false;
+
+    private Node previousNode;
+    private List<Node> neighbors = new List<Node>();
+    private Vector3 position;
+    private bool isObstacle = false;
+    public Node PreviousNode { get => previousNode; set => previousNode = value; }
+    public List<Node> Neighbors { get => neighbors; set => neighbors = value; }
+    public Vector3 Position { get => position; set => position = value; }
+    public bool IsObstacle { get => isObstacle; set => isObstacle = value; }
+
 
     private void OnEnable()
     {
@@ -27,11 +35,16 @@ public class Node : MonoBehaviour
 
     private void Start()
     {
-        position = transform.position;
-        neighbors.Clear();
-        gCost = 0;
-        hCost = 0;
-        isObstacle = false;
+        SetUp();
+    }
+
+    void SetUp()
+    {
+        Position = transform.position;
+        Neighbors.Clear();
+        GCost = 0;
+        HCost = 0;
+        IsObstacle = false;
 
         Vector3[] directions = {
                 Vector3.forward,
@@ -51,9 +64,9 @@ public class Node : MonoBehaviour
             foreach (var hit in Physics.OverlapSphere(checkPos, 0.1f))
             {
                 Node node = hit.GetComponent<Node>();
-                if (node != null && node != this && !neighbors.Contains(node))
+                if (node != null && node != this && !Neighbors.Contains(node))
                 {
-                    neighbors.Add(node);
+                    Neighbors.Add(node);
                 }
             }
         }
@@ -66,16 +79,16 @@ public class Node : MonoBehaviour
             gameObject.GetComponent<Renderer>().material.color = Color.white;
             string tag = clickHoleEvent.tag;
 
-            gCost = 0;
-            hCost = 0;
-            isObstacle = false;
+            GCost = 0;
+            HCost = 0;
+            IsObstacle = false;
 
             Vector3 currentPos = transform.position;
 
             // ❗ Chỉ kiểm tra vật thể phía trên node hiện tại
             if (IsBlockedAbove(currentPos, tag))
             {
-                isObstacle = true;
+                IsObstacle = true;
             }
         }
     }

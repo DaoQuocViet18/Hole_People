@@ -14,7 +14,7 @@ public enum Tag
 [RequireComponent(typeof(PeopleController))]
 public class PeopleFindHole : MonoBehaviour
 {
-    public PeopleController peopleController;
+    [SerializeField] private PeopleController peopleController;
 
     [Header("Lists in Gameplay")]
     private List<Node> resultPath = new List<Node>();
@@ -27,8 +27,9 @@ public class PeopleFindHole : MonoBehaviour
     private Node currentNode;
 
     [Header("Tag Group")]
-    public Tag tagSelf;
-    public List<Node> movingNodes;
+    [SerializeField] private Tag tagSelf;
+    private List<Node> movingNodes;
+    private bool isMoving = false;
 
     private void Awake()
     {
@@ -54,7 +55,7 @@ public class PeopleFindHole : MonoBehaviour
 
     private void OnPeopleFindHole(IEventParam param)
     {
-        if (param is OnPeopleFindHole peopleFindHoleEvent)
+        if (param is OnPeopleFindHole peopleFindHoleEvent && !isMoving)
         {
             this.target = peopleFindHoleEvent.target;
             if (Enum.TryParse(peopleFindHoleEvent.tag, out Tag incomingTag))
@@ -86,19 +87,20 @@ public class PeopleFindHole : MonoBehaviour
         currentNode = player;
         frontierNodes.Clear();
         exploredNodes.Clear();
-        frontierNodes.AddRange(currentNode.neighbors.Where(n => !n.isObstacle));
+        frontierNodes.AddRange(currentNode.Neighbors.Where(n => !n.IsObstacle));
 
         foreach (var node in frontierNodes)
         {
-            node.gCost = Vector3.Distance(player.transform.position, node.transform.position);
-            node.hCost = Vector3.Distance(node.transform.position, target.transform.position);
-            node.previousNode = currentNode;
+            node.GCost = Vector3.Distance(player.transform.position, node.transform.position);
+            node.HCost = Vector3.Distance(node.transform.position, target.transform.position);
+            node.PreviousNode = currentNode;
         }
 
         exploredNodes.Add(currentNode);
 
         if (FindPath())
         {
+            isMoving = true;
             Debug.Log("Đã tìm thấy đường đi");
             HighlightPath();
             movingNodes.Reverse();
@@ -114,7 +116,7 @@ public class PeopleFindHole : MonoBehaviour
         while (node != null && node != player)
         {
             HighlightNode(node, Color.red);
-            node = node.previousNode;
+            node = node.PreviousNode;
             movingNodes.Add(node);
 
             i++;
@@ -158,7 +160,7 @@ public class PeopleFindHole : MonoBehaviour
         if (frontierNodes.Contains(target))
         {
             //Debug.LogWarning("Zero Block");
-            target.previousNode = currentNode;
+            target.PreviousNode = currentNode;
             return true;
         }
 
@@ -193,7 +195,7 @@ public class PeopleFindHole : MonoBehaviour
         float bestFCost = frontierNodes.Min(n => n.FCost);
         return frontierNodes
             .Where(n => n.FCost == bestFCost)
-            .OrderBy(n => n.hCost)
+            .OrderBy(n => n.HCost)
             .First();
     }
 
@@ -201,7 +203,7 @@ public class PeopleFindHole : MonoBehaviour
 
     bool AddExplored(Node node)
     {
-        if (!exploredNodes.Contains(node) && !node.isObstacle)
+        if (!exploredNodes.Contains(node) && !node.IsObstacle)
         {
             frontierNodes.Remove(node);
             exploredNodes.Add(node);
@@ -212,27 +214,27 @@ public class PeopleFindHole : MonoBehaviour
 
     void AddNeighborsToFrontier(Node node)
     {
-        foreach (var neighbor in node.neighbors)
+        foreach (var neighbor in node.Neighbors)
         {
-            if (exploredNodes.Contains(neighbor) || neighbor.isObstacle)
+            if (exploredNodes.Contains(neighbor) || neighbor.IsObstacle)
                 continue;
 
-            float GCost = node.gCost + Vector3.Distance(node.transform.position, neighbor.transform.position);
+            float GCost = node.GCost + Vector3.Distance(node.transform.position, neighbor.transform.position);
 
             if (!frontierNodes.Contains(neighbor))
             {
-                neighbor.previousNode = node;
-                neighbor.gCost = GCost;
-                neighbor.hCost = Vector3.Distance(neighbor.transform.position, target.transform.position);
+                neighbor.PreviousNode = node;
+                neighbor.GCost = GCost;
+                neighbor.HCost = Vector3.Distance(neighbor.transform.position, target.transform.position);
                 frontierNodes.Add(neighbor);
             }
             else
             {
-                float newFCost = GCost + neighbor.hCost;
+                float newFCost = GCost + neighbor.HCost;
                 if (newFCost < neighbor.FCost)
                 {
-                    neighbor.previousNode = node;
-                    neighbor.gCost = GCost;
+                    neighbor.PreviousNode = node;
+                    neighbor.GCost = GCost;
                 }
             }
         }

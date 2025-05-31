@@ -888,7 +888,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8696837687695447451}
   - component: {fileID: 6408899841012811031}
-  - component: {fileID: 6816353623869538698}
+  - component: {fileID: 8479405440458595373}
   - component: {fileID: 2950305792083017454}
   m_Layer: 6
   m_Name: Character_Idle_Animation (1)
@@ -906,7 +906,7 @@ Transform:
   m_GameObject: {fileID: 2151092195552551640}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 1, y: 0.41, z: 0}
+  m_LocalPosition: {x: 1, y: 0, z: 0}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -934,10 +934,10 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.05
-  m_Height: 0.25
+  m_Height: 0.2
   m_Direction: 1
   m_Center: {x: 0, y: 0.1, z: 0}
---- !u!54 &6816353623869538698
+--- !u!54 &8479405440458595373
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1163,7 +1163,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6566624744734897715}
   - component: {fileID: 4840735016835250740}
-  - component: {fileID: 2894107315343937200}
+  - component: {fileID: 6597054505972950319}
   - component: {fileID: 7061313306307540569}
   m_Layer: 6
   m_Name: Character_Idle_Animation (2)
@@ -1181,7 +1181,7 @@ Transform:
   m_GameObject: {fileID: 2378522042065537746}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 1, y: 0.41, z: 1}
+  m_LocalPosition: {x: 1, y: 0, z: 1}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1209,10 +1209,10 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.05
-  m_Height: 0.25
+  m_Height: 0.2
   m_Direction: 1
   m_Center: {x: 0, y: 0.1, z: 0}
---- !u!54 &2894107315343937200
+--- !u!54 &6597054505972950319
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1330,7 +1330,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3304693970576590624}
   - component: {fileID: 505051581141102980}
-  - component: {fileID: 7852952408026239666}
+  - component: {fileID: 5634738945996864170}
   - component: {fileID: 9125025748864076703}
   m_Layer: 6
   m_Name: Character_Idle_Animation
@@ -1348,7 +1348,7 @@ Transform:
   m_GameObject: {fileID: 2780815559689215386}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 0, y: 0.41, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1376,10 +1376,10 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.05
-  m_Height: 0.25
+  m_Height: 0.2
   m_Direction: 1
   m_Center: {x: 0, y: 0.1, z: 0}
---- !u!54 &7852952408026239666
+--- !u!54 &5634738945996864170
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3601,7 +3601,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4306355043779668558}
   - component: {fileID: 1139082523603916963}
-  - component: {fileID: 1333415862574875106}
+  - component: {fileID: 5360574411934828179}
   - component: {fileID: 206338286733935855}
   m_Layer: 6
   m_Name: Character_Idle_Animation (3)
@@ -3619,7 +3619,7 @@ Transform:
   m_GameObject: {fileID: 8735432487737730147}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 0, y: 0.41, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3647,10 +3647,10 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.05
-  m_Height: 0.25
+  m_Height: 0.2
   m_Direction: 1
   m_Center: {x: 0, y: 0.1, z: 0}
---- !u!54 &1333415862574875106
+--- !u!54 &5360574411934828179
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -6,7 +6,7 @@ using UnityEngine;
 public class PeopleController : MonoBehaviour
 {
     [Header("People Settings")]
-    public PeopleMovement[] peopleMovements;
+    [SerializeField] private PeopleMovement[] peopleMovements;
 
     private void Awake()
     {
@@ -22,7 +22,6 @@ public class PeopleController : MonoBehaviour
 
     public void MovePeople(List<Node> movingNodes)
     {
-        Debug.Log("movingNodes_2: " + movingNodes.Count);
         StartCoroutine(MovePeopleThroughNodes(movingNodes));
     }
 
