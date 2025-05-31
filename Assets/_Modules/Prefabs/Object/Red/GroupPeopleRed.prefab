@@ -963,7 +963,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 126
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &3134902920880244327
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -976,9 +976,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17e926228092ca4d90369810626ad54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 10
   movementSlowDownFactor: 2
   rotationSpeed: 5
+  isFalling: 0
 --- !u!1 &2283833160770268447
 GameObject:
   m_ObjectHideFlags: 0
@@ -1238,7 +1239,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 126
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &5714881104710997720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1251,9 +1252,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17e926228092ca4d90369810626ad54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 10
   movementSlowDownFactor: 2
   rotationSpeed: 5
+  isFalling: 0
 --- !u!1 &2413133908584146145
 GameObject:
   m_ObjectHideFlags: 0
@@ -1405,7 +1407,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 126
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &3545548746816480905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1418,9 +1420,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17e926228092ca4d90369810626ad54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 10
   movementSlowDownFactor: 2
   rotationSpeed: 5
+  isFalling: 0
 --- !u!1 &2865647416101469330
 GameObject:
   m_ObjectHideFlags: 0
@@ -3318,9 +3321,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   peopleController: {fileID: 1794956421531621160}
-  tagSelf: 0
-  movingNodes: []
-  isMoving: 0
+  player: {fileID: 0}
+  tagSelf: 1
 --- !u!114 &1794956421531621160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3677,7 +3679,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 126
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &2560703848640859517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3690,9 +3692,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17e926228092ca4d90369810626ad54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 10
   movementSlowDownFactor: 2
   rotationSpeed: 5
+  isFalling: 0
 --- !u!1 &8787877670451637287
 GameObject:
   m_ObjectHideFlags: 0

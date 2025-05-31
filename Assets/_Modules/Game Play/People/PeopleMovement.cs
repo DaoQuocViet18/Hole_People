@@ -6,7 +6,7 @@ using DG.Tweening;
 public class PeopleMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
-    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float moveSpeed = 10f;
     [SerializeField] private float movementSlowDownFactor = 2f;
     [SerializeField] private float rotationSpeed = 5f;
     [SerializeField] private bool isFalling = false; // để ngăn di chuyển tiếp khi rơi vào hole
@@ -91,7 +91,7 @@ public class PeopleMovement : MonoBehaviour
                               .SetEase(Ease.InQuad)
                               .OnComplete(() =>
                               {
-                                  gameObject.SetActive(false);
+                                  //gameObject.SetActive(false);
                               });
                  });
     }

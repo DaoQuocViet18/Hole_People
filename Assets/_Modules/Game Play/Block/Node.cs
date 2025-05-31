@@ -13,10 +13,10 @@ public class Node : MonoBehaviour
     public float FCost => GCost + HCost;
 
 
-    private Node previousNode;
-    private List<Node> neighbors = new List<Node>();
-    private Vector3 position;
-    private bool isObstacle = false;
+    [SerializeField] private Node previousNode;
+    [SerializeField] private List<Node> neighbors = new List<Node>();
+    [SerializeField] private Vector3 position;
+    [SerializeField] private bool isObstacle = false;
     public Node PreviousNode { get => previousNode; set => previousNode = value; }
     public List<Node> Neighbors { get => neighbors; set => neighbors = value; }
     public Vector3 Position { get => position; set => position = value; }

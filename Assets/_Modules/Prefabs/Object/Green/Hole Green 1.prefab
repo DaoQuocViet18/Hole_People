@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5385400023308731330}
   - component: {fileID: 7531302663202631672}
   - component: {fileID: 933091428354568058}
-  - component: {fileID: 5660893683170448325}
   m_Layer: 7
   m_Name: Torus
   m_TagString: Green
@@ -103,27 +102,13 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 1
+  m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -8803937527578110353, guid: fe85006b577fcbc45aba60f6211f5ca1, type: 3}
---- !u!114 &5660893683170448325
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1913770052896035848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6466fbf5bd218c468dce210cdea058e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  expectedPeopleCount: 4
-  people: []
 --- !u!1 &5004594840849641207
 GameObject:
   m_ObjectHideFlags: 0
@@ -136,6 +121,7 @@ GameObject:
   - component: {fileID: 17348318977100562}
   - component: {fileID: 7245739688864282607}
   - component: {fileID: 7851262816477184888}
+  - component: {fileID: 2848670585759661119}
   m_Layer: 7
   m_Name: Cylinder
   m_TagString: Green
@@ -226,13 +212,28 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 2534964839176971238, guid: fe85006b577fcbc45aba60f6211f5ca1, type: 3}
+--- !u!114 &2848670585759661119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5004594840849641207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6466fbf5bd218c468dce210cdea058e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  expectedPeopleCount: 4
+  people: []
+  clearDelay: 1
 --- !u!1 &5910556951424751886
 GameObject:
   m_ObjectHideFlags: 0

@@ -244,7 +244,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 126
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &4553759493651878681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -257,9 +257,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17e926228092ca4d90369810626ad54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 10
   movementSlowDownFactor: 2
   rotationSpeed: 5
+  isFalling: 0
 --- !u!1 &390315763534241107
 GameObject:
   m_ObjectHideFlags: 0
@@ -1362,7 +1363,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 126
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &3798363701187931146
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1375,9 +1376,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17e926228092ca4d90369810626ad54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 10
   movementSlowDownFactor: 2
   rotationSpeed: 5
+  isFalling: 0
 --- !u!1 &2712520256166687919
 GameObject:
   m_ObjectHideFlags: 0
@@ -1561,7 +1563,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 126
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &6921556072289107856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1574,9 +1576,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17e926228092ca4d90369810626ad54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 10
   movementSlowDownFactor: 2
   rotationSpeed: 5
+  isFalling: 0
 --- !u!1 &2986307424459074412
 GameObject:
   m_ObjectHideFlags: 0
@@ -2604,7 +2607,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 126
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &8422489909544351832
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2617,9 +2620,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17e926228092ca4d90369810626ad54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 10
   movementSlowDownFactor: 2
   rotationSpeed: 5
+  isFalling: 0
 --- !u!1 &5626880818839824113
 GameObject:
   m_ObjectHideFlags: 0
@@ -2924,9 +2928,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   peopleController: {fileID: 6200952396265762966}
-  tagSelf: 1
-  movingNodes: []
-  isMoving: 0
+  player: {fileID: 0}
+  tagSelf: 2
 --- !u!114 &6200952396265762966
 MonoBehaviour:
   m_ObjectHideFlags: 0

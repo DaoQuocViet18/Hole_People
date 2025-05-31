@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using static EventDefine;
 
 public enum Tag
 {
+    None,
     Red,
     Blue,
     Green
@@ -22,13 +24,13 @@ public class PeopleFindHole : MonoBehaviour
     private List<Node> exploredNodes = new List<Node>();
 
     [Header("Nodes in Gameplay")]
-    private Node player;
+    [SerializeField] private Node player;
     private Node target;
     private Node currentNode;
 
     [Header("Tag Group")]
     [SerializeField] private Tag tagSelf;
-    private List<Node> movingNodes;
+    private List<Node> movingNodes = new List<Node>();
     private bool isMoving = false;
 
     private void Awake()
@@ -85,6 +87,7 @@ public class PeopleFindHole : MonoBehaviour
         }
 
         currentNode = player;
+
         frontierNodes.Clear();
         exploredNodes.Clear();
         frontierNodes.AddRange(currentNode.Neighbors.Where(n => !n.IsObstacle));
@@ -94,6 +97,7 @@ public class PeopleFindHole : MonoBehaviour
             node.GCost = Vector3.Distance(player.transform.position, node.transform.position);
             node.HCost = Vector3.Distance(node.transform.position, target.transform.position);
             node.PreviousNode = currentNode;
+
         }
 
         exploredNodes.Add(currentNode);
@@ -101,7 +105,8 @@ public class PeopleFindHole : MonoBehaviour
         if (FindPath())
         {
             isMoving = true;
-            Debug.Log("Đã tìm thấy đường đi");
+            //Debug.Log("Đã tìm thấy đường đi");
+
             HighlightPath();
             movingNodes.Reverse();
             peopleController.MovePeople(movingNodes);

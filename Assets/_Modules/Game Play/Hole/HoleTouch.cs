@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,24 +9,6 @@ public class HoleTouch : MonoBehaviour
     [SerializeField] private List<GameObject> people = new List<GameObject>();
 
     public event Action<List<GameObject>> OnAllPeopleEntered;
-
-    private bool isWaitingToClear = false;
-    [SerializeField] private float clearDelay = 1f;   // thời gian chờ trước khi clear danh sách
-    private float timer = 0f;
-
-    private void Update()
-    {
-        if (!isWaitingToClear)
-            return;
-
-        timer += Time.deltaTime;
-        if (timer >= clearDelay)
-        {
-            people.Clear();
-            timer = 0f;
-            isWaitingToClear = false;
-        }
-    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -37,10 +20,16 @@ public class HoleTouch : MonoBehaviour
 
             if (people.Count >= expectedPeopleCount)
             {
-                OnAllPeopleEntered?.Invoke(new List<GameObject>(people));
-                isWaitingToClear = true;
-                timer = 0f;
+                StartCoroutine(InvokeAfterDelay(0.5f));
             }
         }
+    }
+
+    private IEnumerator InvokeAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        OnAllPeopleEntered?.Invoke(new List<GameObject>(people));
+        people.Clear();
     }
 }
