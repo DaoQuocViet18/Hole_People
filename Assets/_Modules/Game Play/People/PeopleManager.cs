@@ -5,43 +5,9 @@ using UnityEngine.AI;
 
 public class PeopleManager : MonoBehaviour
 {
-    [SerializeField] private GameObject[] allPeople;
-
-    private Dictionary<string, List<GameObject>> groups = new Dictionary<string, List<GameObject>>();
-
     void Start()
     {
-        SetupPeople();
-
-        SetupGroups();
-    }
-
-    void SetupPeople()
-    {
-        int peopleLayer = LayerMask.NameToLayer("People");
-        List<GameObject> foundPeople = new List<GameObject>();
-
-        foreach (GameObject obj in FindObjectsByType<GameObject>(FindObjectsSortMode.None))
-        {
-            if (obj.layer == peopleLayer)
-                foundPeople.Add(obj);
-        }
-
-        allPeople = foundPeople.ToArray();
-    }
-
-    void SetupGroups()
-    {
-        groups.Clear();
-
-        foreach (GameObject person in allPeople)
-        {
-            string tag = person.tag;
-            if (!groups.ContainsKey(tag))
-                groups[tag] = new List<GameObject>();
-
-            groups[tag].Add(person);
-        }
+       
     }
 
     void Update()
@@ -57,10 +23,7 @@ public class PeopleManager : MonoBehaviour
                 {
                     string groupTag = hit.collider.gameObject.tag;
 
-                    if (groups.ContainsKey(groupTag))
-                    {
-                        StartCoroutine(HandleClickHole(hit.collider.gameObject, groupTag));
-                    }
+                    StartCoroutine(HandleClickHole(hit.collider.gameObject, groupTag));
                 }
             }
         }
@@ -91,22 +54,6 @@ public class PeopleManager : MonoBehaviour
                     target = nodeBelow
                 });
                 break;
-            }
-        }
-    }
-
-
-    public void MoveGroup(string groupName, Vector3 target)
-    {
-        if (!groups.ContainsKey(groupName)) return;
-
-        foreach (GameObject person in groups[groupName])
-        {
-            NavMeshAgent agent = person.GetComponent<NavMeshAgent>();
-            if (agent != null)
-            {
-                agent.speed = 15;
-                agent.SetDestination(target);
             }
         }
     }

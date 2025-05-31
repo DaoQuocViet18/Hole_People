@@ -1,22 +1,46 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static EventDefine;
 
+public enum Tag
+{
+    Red,
+    Blue,
+    Green
+}
+
+[RequireComponent(typeof(PeopleController))]
 public class PeopleFindHole : MonoBehaviour
 {
+    public PeopleController peopleController;
+
     [Header("Lists in Gameplay")]
-    public List<Node> resultPath = new List<Node>();
-    public List<Node> frontierNodes = new List<Node>();
-    public List<Node> exploredNodes = new List<Node>();
+    private List<Node> resultPath = new List<Node>();
+    private List<Node> frontierNodes = new List<Node>();
+    private List<Node> exploredNodes = new List<Node>();
 
     [Header("Nodes in Gameplay")]
-    public Node player;
-    public Node target;
-    public Node currentNode;
+    private Node player;
+    private Node target;
+    private Node currentNode;
 
     [Header("Tag Group")]
-    public string tagGroup;
+    public Tag tagSelf;
+    public List<Node> movingNodes;
+
+    private void Awake()
+    {
+        if (peopleController == null)
+            peopleController = GetComponent<PeopleController>();
+    }
+
+    private void Reset()
+    {
+        if (peopleController == null)
+            peopleController = GetComponent<PeopleController>();
+    }
 
     private void OnEnable()
     {
@@ -33,11 +57,12 @@ public class PeopleFindHole : MonoBehaviour
         if (param is OnPeopleFindHole peopleFindHoleEvent)
         {
             this.target = peopleFindHoleEvent.target;
-            string tag = peopleFindHoleEvent.tag;
-
-            if (target != null && tagGroup == tag)
+            if (Enum.TryParse(peopleFindHoleEvent.tag, out Tag incomingTag))
             {
-                Setup();
+                if (target != null && tagSelf == incomingTag)
+                {
+                    Setup();
+                }
             }
         }
     }
@@ -76,6 +101,8 @@ public class PeopleFindHole : MonoBehaviour
         {
             Debug.Log("Đã tìm thấy đường đi");
             HighlightPath();
+            movingNodes.Reverse();
+            peopleController.MovePeople(movingNodes);
         }
     }
 
@@ -88,6 +115,7 @@ public class PeopleFindHole : MonoBehaviour
         {
             HighlightNode(node, Color.red);
             node = node.previousNode;
+            movingNodes.Add(node);
 
             i++;
             if (i > 1000)
@@ -117,19 +145,19 @@ public class PeopleFindHole : MonoBehaviour
     {
         if (frontierNodes.Count <= 0)
         {
-            Debug.LogWarning("Cout frontier by zero");
+            //Debug.LogWarning("Cout frontier by zero");
             return false;
         }
 
         if (target == player)
         {
-            Debug.LogWarning("One Block");
+            //Debug.LogWarning("One Block");
             return true;
         }
 
         if (frontierNodes.Contains(target))
         {
-            Debug.LogWarning("Zero Block");
+            //Debug.LogWarning("Zero Block");
             target.previousNode = currentNode;
             return true;
         }
@@ -140,7 +168,7 @@ public class PeopleFindHole : MonoBehaviour
 
             if (currentNode == null)
             {
-                Debug.LogWarning("Không tìm thấy đường đi đến Target.");
+                //Debug.LogWarning("Không tìm thấy đường đi đến Target.");
                 return false;
             }
 

@@ -25,6 +25,40 @@ public class Node : MonoBehaviour
         EventDispatcher.Remove<OnClickHole>(OnClickHole);
     }
 
+    private void Start()
+    {
+        position = transform.position;
+        neighbors.Clear();
+        gCost = 0;
+        hCost = 0;
+        isObstacle = false;
+
+        Vector3[] directions = {
+                Vector3.forward,
+                Vector3.back,
+                Vector3.left,
+                Vector3.right
+            };
+
+        float offsetDistance = 1f;
+        Vector3 currentPos = transform.position;
+
+        // Tìm các Node lân cận
+        foreach (var dir in directions)
+        {
+            Vector3 checkPos = currentPos + dir * offsetDistance;
+
+            foreach (var hit in Physics.OverlapSphere(checkPos, 0.1f))
+            {
+                Node node = hit.GetComponent<Node>();
+                if (node != null && node != this && !neighbors.Contains(node))
+                {
+                    neighbors.Add(node);
+                }
+            }
+        }
+    }
+
     private void OnClickHole(IEventParam param)
     {
         if (param is OnClickHole clickHoleEvent)
@@ -32,36 +66,11 @@ public class Node : MonoBehaviour
             gameObject.GetComponent<Renderer>().material.color = Color.white;
             string tag = clickHoleEvent.tag;
 
-            position = transform.position;
-            neighbors.Clear();
             gCost = 0;
             hCost = 0;
             isObstacle = false;
 
-            Vector3[] directions = {
-                Vector3.forward,
-                Vector3.back,
-                Vector3.left,
-                Vector3.right
-            };
-
-            float offsetDistance = 1f;
             Vector3 currentPos = transform.position;
-
-            // Tìm các Node lân cận
-            foreach (var dir in directions)
-            {
-                Vector3 checkPos = currentPos + dir * offsetDistance;
-
-                foreach (var hit in Physics.OverlapSphere(checkPos, 0.1f))
-                {
-                    Node node = hit.GetComponent<Node>();
-                    if (node != null && node != this && !neighbors.Contains(node))
-                    {
-                        neighbors.Add(node);
-                    }
-                }
-            }
 
             // ❗ Chỉ kiểm tra vật thể phía trên node hiện tại
             if (IsBlockedAbove(currentPos, tag))
