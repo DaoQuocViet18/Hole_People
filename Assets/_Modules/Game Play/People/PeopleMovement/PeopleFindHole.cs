@@ -16,7 +16,7 @@ public enum Tag
 [RequireComponent(typeof(PeopleController))]
 public class PeopleFindHole : MonoBehaviour
 {
-    [SerializeField] private PeopleController peopleController;
+    [SerializeField] private GroupPeopleMovementCtrl groupPeopleController;
 
     [Header("Lists in Gameplay")]
     private List<Node> resultPath = new List<Node>();
@@ -35,14 +35,18 @@ public class PeopleFindHole : MonoBehaviour
 
     private void Awake()
     {
-        if (peopleController == null)
-            peopleController = GetComponent<PeopleController>();
+        LoadComponents();
     }
 
     private void Reset()
     {
-        if (peopleController == null)
-            peopleController = GetComponent<PeopleController>();
+        LoadComponents();
+    }
+
+    void LoadComponents ()
+    {
+        if (groupPeopleController == null)
+            groupPeopleController = GetComponentInParent<GroupPeopleMovementCtrl>();
     }
 
     private void OnEnable()
@@ -109,7 +113,7 @@ public class PeopleFindHole : MonoBehaviour
 
             HighlightPath();
             movingNodes.Reverse();
-            peopleController.MovePeople(movingNodes);
+            groupPeopleController.PeopleController.MovePeople(movingNodes);
         }
     }
 

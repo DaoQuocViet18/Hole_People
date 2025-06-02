@@ -6,18 +6,22 @@ using UnityEngine;
 public class PeopleController : MonoBehaviour
 {
     [Header("People Settings")]
-    [SerializeField] private PeopleMovement[] peopleMovements;
+    [SerializeField] private GroupPeopleMovementCtrl groupPeopleController;
 
     private void Awake()
     {
-        if (peopleMovements == null || peopleMovements.Length == 0)
-            peopleMovements = GetComponentsInChildren<PeopleMovement>();
+        LoadComponents();
     }
 
     private void Reset()
     {
-        if (peopleMovements == null || peopleMovements.Length == 0)
-            peopleMovements = GetComponentsInChildren<PeopleMovement>();
+        LoadComponents();
+    }
+
+    void LoadComponents()
+    {
+        if (groupPeopleController == null)
+            groupPeopleController = GetComponentInParent<GroupPeopleMovementCtrl>();
     }
 
     public void MovePeople(List<Node> movingNodes)
@@ -27,7 +31,7 @@ public class PeopleController : MonoBehaviour
 
     private IEnumerator MovePeopleThroughNodes(List<Node> movingNodes)
     {
-        foreach (var people in peopleMovements)
+        foreach (var people in groupPeopleController.PeopleMovements)
         {
             people.Moving(movingNodes);
 

@@ -3280,6 +3280,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8298783405800835385}
+  - component: {fileID: 8779163313144791216}
   - component: {fileID: 7166558159596501586}
   - component: {fileID: 6916466412979978022}
   m_Layer: 0
@@ -3308,6 +3309,18 @@ Transform:
   - {fileID: 4306355043779668558}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8779163313144791216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7355381462475263911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55c2b133fb5f12345a298e5e768c462f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &7166558159596501586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3320,7 +3333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb658a69496f293448de9b2d3b175cde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  peopleController: {fileID: 6916466412979978022}
+  groupPeopleController: {fileID: 8779163313144791216}
   player: {fileID: 0}
   tagSelf: 3
 --- !u!114 &6916466412979978022
@@ -3335,11 +3348,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1b9f470f5fd9be4bab6baa10ee4431c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  peopleMovements:
-  - {fileID: 9125025748864076703}
-  - {fileID: 2950305792083017454}
-  - {fileID: 7061313306307540569}
-  - {fileID: 206338286733935855}
+  groupPeopleController: {fileID: 8779163313144791216}
 --- !u!1 &7513193232730921997
 GameObject:
   m_ObjectHideFlags: 0

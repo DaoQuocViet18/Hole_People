@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class PeopleManager : MonoBehaviour
+public class InputManager : MonoBehaviour
 {
     void Start()
     {

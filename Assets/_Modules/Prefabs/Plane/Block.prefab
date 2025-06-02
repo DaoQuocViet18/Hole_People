@@ -67,7 +67,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2dccd6f042a62de4abaf95a29e34531a, type: 2}
+  - {fileID: 2100000, guid: 163bd325f66a5d64cb8a75f5a32a25cb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -122,8 +122,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da326bc8a7e1ca648bacc6dd9e44567a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gCost: 0
-  hCost: 0
   previousNode: {fileID: 0}
   neighbors: []
   position: {x: 0, y: 0, z: 0}
@@ -216,7 +214,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2dccd6f042a62de4abaf95a29e34531a, type: 2}
+  - {fileID: 2100000, guid: 163bd325f66a5d64cb8a75f5a32a25cb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -271,8 +269,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da326bc8a7e1ca648bacc6dd9e44567a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gCost: 0
-  hCost: 0
   previousNode: {fileID: 0}
   neighbors: []
   position: {x: 0, y: 0, z: 0}
@@ -400,7 +396,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2dccd6f042a62de4abaf95a29e34531a, type: 2}
+  - {fileID: 2100000, guid: 163bd325f66a5d64cb8a75f5a32a25cb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -455,8 +451,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da326bc8a7e1ca648bacc6dd9e44567a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gCost: 0
-  hCost: 0
   previousNode: {fileID: 0}
   neighbors: []
   position: {x: 0, y: 0, z: 0}
@@ -549,7 +543,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2dccd6f042a62de4abaf95a29e34531a, type: 2}
+  - {fileID: 2100000, guid: 163bd325f66a5d64cb8a75f5a32a25cb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -604,8 +598,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da326bc8a7e1ca648bacc6dd9e44567a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gCost: 0
-  hCost: 0
   previousNode: {fileID: 0}
   neighbors: []
   position: {x: 0, y: 0, z: 0}

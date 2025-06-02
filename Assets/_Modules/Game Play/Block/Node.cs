@@ -76,7 +76,7 @@ public class Node : MonoBehaviour
     {
         if (param is OnClickHole clickHoleEvent)
         {
-            gameObject.GetComponent<Renderer>().material.color = Color.white;
+            //gameObject.GetComponent<Renderer>().material.color = Color.white;
             string tag = clickHoleEvent.tag;
 
             GCost = 0;
