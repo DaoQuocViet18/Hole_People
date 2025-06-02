@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
@@ -8,7 +9,7 @@ public class PeopleGroup
     public List<GameObject> people = new List<GameObject>();
 }
 
-public class PeopleSpawnManager : Singleton<PeopleSpawnManager>
+public class PeopleSpawnManager : Singleton<PeopleSpawnManager>, ICtrl
 {
     [SerializeField] private List<PeopleGroup> groupsInGame = new List<PeopleGroup>();
     [SerializeField] private List<PeopleGroup> groupsInContain = new List<PeopleGroup>();
@@ -21,14 +22,31 @@ public class PeopleSpawnManager : Singleton<PeopleSpawnManager>
         LoadComponents();
     }
 
+    private void Start()
+    {
+        Init();
+    }
+
     private void Reset()
     {
         LoadComponents();
+        ResetValue();
     }
 
-    protected virtual void LoadComponents()
+    public void LoadComponents()
     {
+        // Your implementation
         LoadGroupedPeopleInGame();
+    }
+
+    public void ResetValue()
+    {
+        // Your implementation
+    }
+
+    public void Init()
+    {
+        // Your implementation
     }
 
     private void LoadGroupedPeopleInGame()
@@ -48,18 +66,23 @@ public class PeopleSpawnManager : Singleton<PeopleSpawnManager>
         Debug.Log($"Loaded {loadedCount} PeopleMovement objects into {GroupsInGame.Count} tag groups.");
     }
 
+    public void SetActivePeople (GameObject obj, bool state)
+    {
+        obj.SetActive(state);
+    }
+
     public void Despawn(GameObject obj)
     {
         if (obj == null) return;
 
         // Remove from groupsInGame
-        RemoveFromGroup(GroupsInGame, obj);
+        RemoveFromGroup(groupsInGame, obj);
 
         // Add to groupsInContain
-        AddToGroup(GroupsInContain, obj.tag, obj);
+        AddToGroup(groupsInContain, obj.tag, obj);
 
         // Deactivate the object
-        obj.SetActive(false);
+        SetActivePeople(obj, false);
     }
 
     /// Thêm một GameObject vào nhóm có tag tương ứng trong danh sách.

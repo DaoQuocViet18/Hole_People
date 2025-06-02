@@ -2,30 +2,57 @@
 using UnityEngine;
 
 [RequireComponent(typeof(PeopleHoleToContainManager))]
-public class PeopleHoleToContainCtrl : CtrlMonoBehaviour
+public class PeopleHoleToContainCtrl : Singleton<PeopleHoleToContainCtrl>, ICtrl
 {
-    [SerializeField] private PeopleHoleToContainManager peopleHoleToContain;
+    [SerializeField] private PeopleHoleToContainManager peopleHoleToContainManager;
     [SerializeField] private HoleTouch[] hole;
     [SerializeField] private ContainArrangement[] containArrangements;
     [SerializeField] private ContainEndGame containEndGame;
 
-    public PeopleHoleToContainManager PeopleHoleToContain { get => peopleHoleToContain; set => peopleHoleToContain = value; }
+    public PeopleHoleToContainManager PeopleHoleToContainManager { get => peopleHoleToContainManager; set => peopleHoleToContainManager = value; }
     public HoleTouch[] Hole { get => hole; set => hole = value; }
     public ContainArrangement[] ContainArrangements { get => containArrangements; set => containArrangements = value; }
     public ContainEndGame ContainEndGame { get => containEndGame; set => containEndGame = value; }
 
-    protected override void LoadComponents()
+    private void Awake()
     {
+        LoadComponents();
+    }
+
+    private void Start()
+    {
+        Init();
+    }
+
+    private void Reset()
+    {
+        LoadComponents();
+        ResetValue();
+    }
+
+    public void LoadComponents()
+    {
+        // Your implementation
         LoadPeopleHoleToContain();
         LoadHoleTouch();
-        LoadPeopleHoleToContain();
+        LoadContainArrangement();
         LoadContainEndGame();
+    }
+
+    public void ResetValue()
+    {
+        // Your implementation
+    }
+
+    public void Init()
+    {
+        // Your implementation
     }
 
     void LoadHoleTouch() 
     {
-        if (PeopleHoleToContain == null)
-            PeopleHoleToContain = GetComponent<PeopleHoleToContainManager>();
+        if (PeopleHoleToContainManager == null)
+            PeopleHoleToContainManager = GetComponent<PeopleHoleToContainManager>();
     }
 
     void LoadPeopleHoleToContain()

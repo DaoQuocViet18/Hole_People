@@ -1,103 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PeopleHoleToContainManager : MonoBehaviour
 {
-    [SerializeField] private PeopleHoleToContainCtrl peopleHoleToContainCtrl;
-
-    private void Reset()
+    private void Start()
     {
-        LoadComponent();
-    }
-
-    private void Awake()
-    {
-        LoadComponent();
-    }
-
-    private void LoadComponent()
-    {
-        if (peopleHoleToContainCtrl == null)
-            peopleHoleToContainCtrl = GetComponent<PeopleHoleToContainCtrl>();
-
-        if (peopleHoleToContainCtrl == null)
-        {
-            Debug.LogError("Missing PeopleHoleToContainCtrl component.");
-            return;
-        }
-
-        foreach (var hole in peopleHoleToContainCtrl.Hole)
+        foreach (var hole in PeopleHoleToContainCtrl.Instance.Hole)
         {
             hole.OnAllPeopleEntered += HandleAllPeopleEnteredHole;
         }
     }
 
-    private void HandleAllPeopleEnteredHole()
+    private void HandleAllPeopleEnteredHole(Tag tagPeople, List<GameObject> despawnedObjects)
     {
-        List<GameObject> inactivePeople = GetInactivePeopleFromContain();
+        List<GameObject> matchedPeople = GetPeopleFromContain(despawnedObjects);
 
-        if (inactivePeople.Count == 0)
-        {
-            //Debug.LogWarning("No inactive people found in GroupsInContain.");
+        if (matchedPeople.Count == 0)
             return;
-        }
 
-        string groupTag = inactivePeople[0].tag;
-
-        if (!Enum.TryParse(groupTag, out Tag incomingTag))
-        {
-            //Debug.LogWarning($"Failed to parse tag '{groupTag}' to Tag enum.");
-            return;
-        }
-
-        ContainArrangement targetContain = FindOrAssignContain(incomingTag);
+        ContainArrangement targetContain = FindOrAssignContain(tagPeople);
 
         if (targetContain != null)
         {
-            targetContain.newPeople.AddRange(inactivePeople);
+            targetContain.people.AddRange(matchedPeople);
             targetContain.Arrangement();
-            //Debug.Log($"Assigned {inactivePeople.Count} people to Contain with tag: {targetContain.tagContain}");
         }
-        else if (peopleHoleToContainCtrl.ContainEndGame != null)
+        else if (PeopleHoleToContainCtrl.Instance.ContainEndGame != null)
         {
-            peopleHoleToContainCtrl.ContainEndGame.newPeople.AddRange(inactivePeople);
-            peopleHoleToContainCtrl.ContainEndGame.Arrangement();
-            //Debug.Log($"Assigned {inactivePeople.Count} people to ContainEndGame with tag: {incomingTag}");
-        }
-        else
-        {
-            //Debug.LogWarning($"No suitable ContainArrangement or ContainEndGame found for tag: {incomingTag}");
+            PeopleHoleToContainCtrl.Instance.ContainEndGame.people.AddRange(matchedPeople);
+            PeopleHoleToContainCtrl.Instance.ContainEndGame.Arrangement();
         }
     }
 
-    private List<GameObject> GetInactivePeopleFromContain()
+    private List<GameObject> GetPeopleFromContain(List<GameObject> despawnedObjects)
     {
-        List<GameObject> result = new List<GameObject>();
-
-        foreach (PeopleGroup group in PeopleSpawnManager.Instance.GroupsInContain)
-        {
-            foreach (GameObject person in group.people)
-            {
-                if (!person.activeSelf)
-                {
-                    result.Add(person);
-                }
-            }
-        }
-
-        return result;
+        return PeopleSpawnManager.Instance.GroupsInContain
+            .SelectMany(group => group.people)
+            .Where(person => despawnedObjects.Contains(person))
+            .ToList();
     }
 
     private ContainArrangement FindOrAssignContain(Tag incomingTag)
     {
-        foreach (var contain in peopleHoleToContainCtrl.ContainArrangements)
+        foreach (var contain in PeopleHoleToContainCtrl.Instance.ContainArrangements)
         {
-            if (contain.tagContain == incomingTag && contain.newPeople.Count < 32)
+            if (contain.tagContain == incomingTag && contain.people.Count < 32)
                 return contain;
         }
 
-        foreach (var contain in peopleHoleToContainCtrl.ContainArrangements)
+        foreach (var contain in PeopleHoleToContainCtrl.Instance.ContainArrangements)
         {
             if (contain.tagContain == Tag.None)
             {

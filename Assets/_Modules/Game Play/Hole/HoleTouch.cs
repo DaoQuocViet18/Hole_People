@@ -1,20 +1,21 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class HoleTouch : MonoBehaviour
 {
-    [SerializeField] private int expectedPeopleCount = 4; // Số người dự kiến vào hole
-    [SerializeField] private GameObject lastPerson; // Người cuối cùng vào
-    [SerializeField] private int numberPeople = 0;
+    [SerializeField] private int expectedPeopleCount = 4;
 
-    public event Action OnAllPeopleEntered;
+    private List<PeopleMovement> peopleInHole = new List<PeopleMovement>();
+    private bool havePeople = false;
+
+    // Truyền ra đúng 4 GameObject đã moved
+    public event Action<Tag, List<GameObject>> OnAllPeopleEntered;
 
     private void OnTriggerEnter(Collider other)
     {
         GameObject obj = other.gameObject;
 
-        // Kiểm tra có PeopleMovement không
         PeopleMovement movement = obj.GetComponent<PeopleMovement>();
         if (movement == null)
         {
@@ -22,42 +23,53 @@ public class HoleTouch : MonoBehaviour
             return;
         }
 
-        PeopleSpawnManager.Instance.Despawn(obj);
-        numberPeople++;
-        lastPerson = obj;
-
-        if (numberPeople >= expectedPeopleCount)
+        if (!peopleInHole.Contains(movement))
         {
-            StartCoroutine(InvokeAfterDelay(0.5f));
+            peopleInHole.Add(movement);
+            havePeople = true;
         }
     }
 
-    private IEnumerator InvokeAfterDelay(float delay)
+    private void Update()
     {
-        if (lastPerson == null)
+        if (!havePeople || peopleInHole.Count < expectedPeopleCount)
+            return;
+
+        // Lọc danh sách người đã moved
+        List<PeopleMovement> readyToDespawn = new List<PeopleMovement>();
+        foreach (var person in peopleInHole)
         {
-            Debug.LogWarning("No last person found.");
-            yield break;
+            if (person.Moved)
+                readyToDespawn.Add(person);
+
+            if (readyToDespawn.Count >= expectedPeopleCount)
+                break; // Đủ 4 người thì dừng
         }
 
-        PeopleMovement movement = lastPerson.GetComponent<PeopleMovement>();
-        if (movement == null)
+        if (readyToDespawn.Count >= expectedPeopleCount)
         {
-            Debug.LogWarning("Last person has no PeopleMovement component.");
-            yield break;
+            List<GameObject> despawnedObjects = new List<GameObject>();
+            for (int i = 0; i < expectedPeopleCount; i++)
+            {
+                var movement = readyToDespawn[i];
+                GameObject go = movement.gameObject;
+
+                PeopleSpawnManager.Instance.Despawn(go);
+                despawnedObjects.Add(go);
+                peopleInHole.Remove(movement);
+            }
+
+            // Lấy tag từ 1 người trong danh sách vừa despawn
+            Tag incomingTag = Tag.None;
+            Enum.TryParse(despawnedObjects[0].tag, out incomingTag);
+
+            // Invoke với đúng 4 người đã despawn
+            OnAllPeopleEntered?.Invoke(incomingTag, despawnedObjects);
         }
 
-        while (!movement.Moved)
+        if (peopleInHole.Count == 0)
         {
-            yield return null;
+            havePeople = false;
         }
-
-        yield return new WaitForSeconds(delay);
-
-        OnAllPeopleEntered?.Invoke();
-
-        // Reset
-        lastPerson = null;
-        numberPeople = 0;
     }
 }

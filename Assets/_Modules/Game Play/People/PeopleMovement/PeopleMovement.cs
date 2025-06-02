@@ -90,7 +90,7 @@ public class PeopleMovement : MonoBehaviour
                  .OnComplete(() =>
                  {
                      // Sau khi chạm đất, rơi xuống trong hole
-                     transform.DOMoveY(holePosition.y - 2f, 0.4f)
+                     transform.DOMoveY(holePosition.y - 2f, 0.2f)
                               .SetEase(Ease.InQuad)
                               .OnComplete(() =>
                               {

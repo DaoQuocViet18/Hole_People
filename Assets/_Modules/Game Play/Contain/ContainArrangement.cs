@@ -6,55 +6,49 @@ using UnityEngine;
 public class ContainArrangement : MonoBehaviour
 {
     public Tag tagContain;
-    public List<GameObject> newPeople = new List<GameObject>();
     public List<GameObject> people = new List<GameObject>();
     public Vector3 positionPeople = new Vector3();
-    public bool fulled = false;
 
     public void Arrangement()
     {
-        // Reset vị trí bắt đầu sắp xếp
-        positionPeople = new Vector3(-2, 0.5f, 2);
+        positionPeople = new Vector3(1.5f, 0, -3.6f);
 
-        Debug.Log("newPeople: " + newPeople.Count);
+        Debug.Log("people: " + people.Count);
 
+        int column = 0;
+        int maxPerRow = 4; // mỗi hàng 4 người
         int placedCount = 0;
 
-        foreach (GameObject person in newPeople)
+        foreach (GameObject person in people)
         {
             if (placedCount >= 32)
             {
-                fulled = true;
                 Debug.LogWarning("ContainArrangement is full (more than 32 people).");
                 break;
             }
 
-            // Tính vị trí và đặt người
-            person.transform.position = this.transform.position + positionPeople;
-            person.SetActive(true);
+            // Đặt người vào vị trí
+            person.transform.position = transform.position + positionPeople;
 
-            // Cập nhật vị trí cho người kế tiếp
-            if (positionPeople.x < 1)
+            // Đặt lại rotation về hướng mong muốn (ví dụ: nhìn về phía Z+)
+            person.transform.rotation = Quaternion.LookRotation(Vector3.forward);
+
+            PeopleSpawnManager.Instance.SetActivePeople(person, true);
+
+            column++;
+            placedCount++;
+
+            // Cập nhật vị trí tiếp theo
+            if (column >= maxPerRow)
             {
-                positionPeople.x += 1;
+                column = 0;
+                positionPeople.x = 1.5f;
+                positionPeople.z += 1; // xuống hàng
             }
             else
             {
-                positionPeople.x = -2;
-                positionPeople.z -= 1;
+                positionPeople.x -= 1; // sang phải
             }
-
-            placedCount++;
         }
-
-        // Nếu sau vòng lặp có đúng 32 người, cũng set fulled = true
-        if (placedCount >= 32)
-        {
-            fulled = true;
-        }
-
-        // Chuyển tất cả người từ newPeople sang people và clear newPeople
-        people.AddRange(newPeople);
-        newPeople.Clear();
     }
 }
