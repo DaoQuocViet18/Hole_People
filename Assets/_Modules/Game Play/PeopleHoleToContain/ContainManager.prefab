@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6449420143472859466}
   - component: {fileID: 8701585452612743672}
   m_Layer: 0
-  m_Name: PeopleHoleToContainManager
+  m_Name: ContainManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68,3 +68,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f402e1aae4dd5394a9d97f46e4399956, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  containArrangements:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  containEndGame: {fileID: 0}

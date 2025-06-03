@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2319373387910449113
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1532380099585617607}
+  - component: {fileID: 5238650078432063997}
+  m_Layer: 0
+  m_Name: FinishHoleManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1532380099585617607
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2319373387910449113}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5238650078432063997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2319373387910449113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cf5dd2fde636874486cd6aee7f1bf60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainHoleLeft: {fileID: 0}
+  mainHoleRight: {fileID: 0}
+  holeLeftPrefabs:
+  - {fileID: 6607117609937501849, guid: afa57479813dde64dbe1d720efaae8c0, type: 3}
+  - {fileID: 2431653242673561801, guid: c7119ca9428aff241a8e0507e492e93c, type: 3}
+  - {fileID: 1370171572350118894, guid: 5636689eb5900a04eb01d5e0b8e5ab1b, type: 3}
+  holeRightPrefabs:
+  - {fileID: 2431653242673561801, guid: c7119ca9428aff241a8e0507e492e93c, type: 3}
+  - {fileID: 1370171572350118894, guid: 5636689eb5900a04eb01d5e0b8e5ab1b, type: 3}
+  - {fileID: 6607117609937501849, guid: afa57479813dde64dbe1d720efaae8c0, type: 3}
+  holeLeftInstances: []
+  holeRightInstances: []
+  holeBlankLeft: 16
+  holeBlankRight: 16
+  startPositionHoleLeft: {x: 0, y: 0, z: -35}
+  startPositionHoleRight: {x: -10, y: 0, z: -35}
+  spacingZ: 7

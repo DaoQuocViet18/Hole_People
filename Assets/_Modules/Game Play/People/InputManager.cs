@@ -1,15 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using static EventDefine;
 
-public class InputManager : MonoBehaviour
+public class InputManager : Singleton<InputManager>
 {
-    void Start()
-    {
-       
-    }
-
     void Update()
     {
         if (Input.GetMouseButtonDown(0)) // Chuột trái
@@ -35,7 +32,6 @@ public class InputManager : MonoBehaviour
 
         // Gửi sự kiện click hole
         EventDispatcher.Dispatch(new EventDefine.OnNodeRun { tag = groupTag });
-
         // Chờ 1 frame để các listener phản hồi
         yield return null;
 

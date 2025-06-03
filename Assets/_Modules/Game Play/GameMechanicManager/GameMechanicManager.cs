@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static EventDefine;
 
@@ -7,6 +8,7 @@ public class GameMechanicManager : Singleton<GameMechanicManager>, ICtrl
 {
     [SerializeField] private List<GroupOfPeople> groupedPeopleInGame = new();
     [SerializeField] private List<GroupOfPeople> groupedPeopleFinishGame = new();
+
 
     public List<GroupOfPeople> GroupedPeopleInGame
     {
@@ -20,6 +22,7 @@ public class GameMechanicManager : Singleton<GameMechanicManager>, ICtrl
         set => groupedPeopleFinishGame = value ?? new List<GroupOfPeople>();
     }
 
+    
     private void Awake()
     {
         LoadComponents();
@@ -101,40 +104,165 @@ public class GameMechanicManager : Singleton<GameMechanicManager>, ICtrl
         }
     }
 
+    
+
     private void OnEnable()
     {
         EventDispatcher.Add<OnPeopleRun>(OnPeopleRun);
+        EventDispatcher.Add<OnEntryHoleTouch>(OnEntryHoleTouch);
     }
 
     private void OnDisable()
     {
         EventDispatcher.Remove<OnPeopleRun>(OnPeopleRun);
+        EventDispatcher.Remove<OnEntryHoleTouch>(OnEntryHoleTouch);
     }
 
     private void OnPeopleRun(IEventParam param)
     {
         if (param is not OnPeopleRun peopleRunEvent) return;
-
         if (!Enum.TryParse(peopleRunEvent.tag, true, out Tag tagHole)) return;
 
-        // Lấy danh sách người trong group có tag tương ứng
-        List<GameObject> groupPeople = new();
-
-        foreach (GroupOfPeople group in groupedPeopleInGame)
-        {
-            if (group.tag == tagHole)
-            {
-                groupPeople.AddRange(group.groupPeople);
-                break; // vì mỗi tag chỉ nên có 1 group
-            }
-        }
-
-        if (groupPeople.Count == 0)
+        GroupOfPeople group = groupedPeopleInGame.Find(g => g.tag == tagHole);
+        if (group == null || group.groupPeople.Count == 0)
         {
             Debug.LogWarning($"[PeopleManager] No people found for tag '{tagHole}'");
             return;
         }
 
-        PeopleManager.Instance.GroupPeopleFindHole(groupPeople, peopleRunEvent.target);
+        int numberGroup = 0;
+
+        // 1. MainHole cùng tag thì +4 mỗi cái
+        if (FinishHoleManager.Instance.MainHoleLeft != null &&
+            FinishHoleManager.Instance.MainHoleLeft.tag == peopleRunEvent.tag)
+            numberGroup += FinishHoleManager.Instance.HoleBlankLeft/4;
+
+        if (FinishHoleManager.Instance.MainHoleRight != null &&
+            FinishHoleManager.Instance.MainHoleRight.tag == peopleRunEvent.tag)
+            numberGroup += FinishHoleManager.Instance.HoleBlankRight / 4;
+
+        // 2. Contain logic
+
+        foreach (var item in ContainManager.Instance.ContainArrangements)
+        {
+            if (item.TagContain == tagHole)
+            {
+                numberGroup += item.ContainBlank / 4;
+                break;
+            }
+        }
+
+        foreach (var item in ContainManager.Instance.ContainArrangements)
+        {
+            if (item.TagContain == Tag.None)
+            {
+                numberGroup += 8;
+                break;
+            }
+        }
+
+        // 3. Di chuyển nhóm
+        PeopleManager.Instance.GroupPeopleFindHole(group.groupPeople, peopleRunEvent.target, numberGroup);
+    }
+
+    private void OnEntryHoleTouch(IEventParam param)
+    {
+        if (param is not OnEntryHoleTouch entryHoleTouchEvent) return;
+        if (!Enum.TryParse(entryHoleTouchEvent.tag, true, out Tag tagHole)) return;
+
+        List<GameObject> people = entryHoleTouchEvent.people;
+
+        HashSet<Transform> uniqueParents = new();
+        List<GameObject> parentsToChange = new();
+
+        foreach (GameObject item in people)
+        {
+            if (item == null) continue;
+
+            Transform parentTransform = item.transform.parent;
+            if (parentTransform == null || !uniqueParents.Add(parentTransform))
+                continue; // Skip nếu null hoặc đã xử lý
+
+            // Lấy tất cả PeopleMovement trong các con của parent
+            PeopleMovement[] childrenMovements = parentTransform.GetComponentsInChildren<PeopleMovement>();
+
+            bool allMoved = true;
+            foreach (var movement in childrenMovements)
+            {
+                if (movement == null || !movement.Moved)
+                {
+                    allMoved = false;
+                    break;
+                }
+            }
+
+            if (allMoved)
+            {
+                parentsToChange.Add(parentTransform.gameObject);
+            }
+        }
+
+        if (parentsToChange.Count > 0)
+        {
+            foreach (var parentObj in parentsToChange)
+            {
+                ChangeIntoFinishGame(parentObj);
+            }
+        }
+    }
+
+    public void ChangeIntoFinishGame(GameObject parentObj)
+    {
+        if (parentObj == null) return;
+
+        RemoveFromGroup(groupedPeopleInGame, parentObj);
+
+        if (!Enum.TryParse<Tag>(parentObj.tag, true, out var tag)) return;
+
+        AddToGroup(groupedPeopleFinishGame, tag, parentObj);
+
+        PutInFinishHoleOrContain(tag, parentObj);
+    }
+
+    /// Thêm một GameObject vào nhóm có tag tương ứng trong danh sách.
+    private void AddToGroup(List<GroupOfPeople> groupList, Tag tag, GameObject obj)
+    {
+        if (obj == null) return;
+
+        var group = groupList.Find(g => g.tag == tag);
+        if (group == null)
+        {
+            group = new GroupOfPeople { tag = tag };
+            groupList.Add(group);
+        }
+
+        if (!group.groupPeople.Contains(obj))
+        {
+            group.groupPeople.Add(obj);
+        }
+    }
+
+    /// Gỡ GameObject khỏi nhóm chứa nó trong danh sách.
+    private void RemoveFromGroup(List<GroupOfPeople> groupList, GameObject obj)
+    {
+        if (obj == null) return;
+
+        foreach (var group in groupList)
+        {
+            if (group.groupPeople.Remove(obj))
+                break;
+        }
+    }
+
+    void PutInFinishHoleOrContain(Tag tag, GameObject parentObj)
+    {
+        if (FinishHoleManager.Instance.CheckTagFinishHole(tag))
+        {
+            FinishHoleManager.Instance.PutPeopleInFinishHole(parentObj);
+            RemoveFromGroup(groupedPeopleFinishGame, parentObj);
+            Destroy(parentObj);
+        }
+        else if (ContainManager.Instance.CheckTagContain(tag))
+            ContainManager.Instance.PutPeopleInContain(tag, parentObj);
     }
 }

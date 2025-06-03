@@ -2889,7 +2889,6 @@ GameObject:
   - component: {fileID: 2778168868941839300}
   - component: {fileID: 8262814979037849488}
   - component: {fileID: 1841123502382173508}
-  - component: {fileID: 6200952396265762966}
   m_Layer: 6
   m_Name: GroupPeopleBlue
   m_TagString: Blue
@@ -2943,19 +2942,7 @@ MonoBehaviour:
   groupPeopleController: {fileID: 8262814979037849488}
   player: {fileID: 0}
   tagSelf: 2
---- !u!114 &6200952396265762966
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6629440734617676755}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1b9f470f5fd9be4bab6baa10ee4431c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  groupPeopleController: {fileID: 8262814979037849488}
+  isMoving: 0
 --- !u!1 &6684418872671431942
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,7 +7,7 @@ using static EventDefine;
 
 public class PeopleManager : Singleton<PeopleManager>
 {
-    public void GroupPeopleFindHole (List<GameObject> groupPeople, Node target)
+    public void GroupPeopleFindHole (List<GameObject> groupPeople, Node target, int numberGroup)
     {
         // Lấy list các cặp (person, đường đi)
         var paths = new List<(GameObject singleGroup, List<Node> path)>();
@@ -21,10 +21,10 @@ public class PeopleManager : Singleton<PeopleManager>
             }
         }
 
-        // Lấy 8 người có đường đi ngắn nhất (dựa vào độ dài đường đi)
+        // Lấy numberGroup người có đường đi ngắn nhất (dựa vào độ dài đường đi)
         var shortestPaths = paths
             .OrderBy(p => p.path.Count)
-            .Take(8)
+            .Take(numberGroup)
             .ToList();
 
         foreach (var (singleGroup, path) in shortestPaths)

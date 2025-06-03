@@ -4,58 +4,37 @@ using UnityEngine;
 
 public class FinishHoleManager : Singleton<FinishHoleManager>
 {
-    public GameObject mainHoleLeft;
-    public GameObject mainHoleRight;
-    public List<GameObject> holeLeftPrefabs = new List<GameObject>();
-    public List<GameObject> holeRightPrefabs = new List<GameObject>();
+    [SerializeField] private GameObject mainHoleLeft;
+    [SerializeField] private GameObject mainHoleRight;
+    [SerializeField] private List<GameObject> holeLeftPrefabs = new List<GameObject>();
+    [SerializeField] private List<GameObject> holeRightPrefabs = new List<GameObject>();
 
-    private List<GameObject> holeLeftInstances = new List<GameObject>();
-    private List<GameObject> holeRightInstances = new List<GameObject>();
+    [SerializeField] private List<GameObject> holeLeftInstances = new List<GameObject>();
+    [SerializeField] private List<GameObject> holeRightInstances = new List<GameObject>();
 
-    public Vector3 startPositionHoleLeft = new Vector3(0, 0, -35);
-    public Vector3 startPositionHoleRight = new Vector3(-10, 0, -35);
-    public float spacingZ = 7f;
+    [SerializeField] private int holeBlankLeft = 16;
+    [SerializeField] private int holeBlankRight = 16;
+
+    [SerializeField] private Vector3 startPositionHoleLeft = new Vector3(0, 0, -35);
+    [SerializeField] private Vector3 startPositionHoleRight = new Vector3(-10, 0, -35);
+    [SerializeField] private float spacingZ = 7f;
+
+    public List<GameObject> HoleLeftInstances { get => holeLeftInstances; set => holeLeftInstances = value; }
+    public List<GameObject> HoleRightInstances { get => holeRightInstances; set => holeRightInstances = value; }
+    public GameObject MainHoleLeft { get => mainHoleLeft; set => mainHoleLeft = value; }
+    public GameObject MainHoleRight { get => mainHoleRight; set => mainHoleRight = value; }
+    public int HoleBlankLeft { get => holeBlankLeft; set => holeBlankLeft = value; }
+    public int HoleBlankRight { get => holeBlankRight; set => holeBlankRight = value; }
 
     void Start()
     {
-        holeLeftInstances = SpawnHoles(holeLeftPrefabs, startPositionHoleLeft);
-        holeRightInstances = SpawnHoles(holeRightPrefabs, startPositionHoleRight);
+        HoleLeftInstances = SpawnHoles(holeLeftPrefabs, startPositionHoleLeft);
+        HoleRightInstances = SpawnHoles(holeRightPrefabs, startPositionHoleRight);
 
-        if (holeLeftInstances.Count > 0)
-            mainHoleLeft = holeLeftInstances[0];
-        if (holeRightInstances.Count > 0)
-            mainHoleRight = holeRightInstances[0];
-
-        RegisterHoleEvents(holeLeftInstances);
-        RegisterHoleEvents(holeRightInstances);
-    }
-
-    private void RegisterHoleEvents(List<GameObject> holeInstances)
-    {
-        foreach (var hole in holeInstances)
-        {
-            var touchComponent = hole.GetComponent<FinishHoleTouch>();
-            if (touchComponent != null)
-                touchComponent.OnFulledFinishHole += OnFulledFinishHole;
-        }
-    }
-
-    private void OnFulledFinishHole(GameObject obj)
-    {
-        if (holeLeftInstances.Contains(obj))
-        {
-            Debug.Log("Hole đầy thuộc bên LEFT");
-            ChangeMainHoleLeft();
-        }
-        else if (holeRightInstances.Contains(obj))
-        {
-            Debug.Log("Hole đầy thuộc bên RIGHT");
-            ChangeMainHoleRight();
-        }
-        else
-        {
-            Debug.LogWarning("Hole không xác định thuộc bên nào!");
-        }
+        if (HoleLeftInstances.Count > 0)
+            MainHoleLeft = HoleLeftInstances[0];
+        if (HoleRightInstances.Count > 0)
+            MainHoleRight = HoleRightInstances[0];
     }
 
     private List<GameObject> SpawnHoles(List<GameObject> holePrefabs, Vector3 startPosition)
@@ -73,20 +52,90 @@ public class FinishHoleManager : Singleton<FinishHoleManager>
         return instances;
     }
 
-    public void ChangeMainHoleLeft()
+    public bool CheckTagFinishHole(Tag tag)
     {
-        ChangeMainHole(ref mainHoleLeft, holeLeftInstances);
-        ContainToFinishHole(mainHoleLeft);
+        if (mainHoleLeft.tag == tag.ToString() && holeBlankLeft > 0)
+            return true;
+        else if (mainHoleRight.tag == tag.ToString() && holeBlankRight > 0)
+            return true;
+        return false;
     }
 
-    public void ChangeMainHoleRight()
+    public void PutPeopleInFinishHole(GameObject parentObj)
     {
-        ChangeMainHole(ref mainHoleRight, holeRightInstances);
-        ContainToFinishHole(mainHoleRight);
+        if (parentObj == null) return;
+
+        List<GameObject> listObj = new();
+        PeopleMovement[] peopleMovements = parentObj.GetComponentsInChildren<PeopleMovement>(true);
+
+        foreach (var movement in peopleMovements)
+        {
+            if (movement != null)
+                listObj.Add(movement.gameObject);
+        }
+
+        if (listObj.Count == 0) return;
+
+        // Lấy tag từ parent hoặc từ phần tử đầu tiên nếu cần
+        string groupTag = parentObj.tag;
+        if (string.IsNullOrEmpty(groupTag) && listObj.Count > 0)
+            groupTag = listObj[0].tag;
+
+        // Ưu tiên hố bên trái
+        if (mainHoleLeft != null && mainHoleLeft.tag == groupTag && holeBlankLeft > 0)
+        {
+            MovePeopleOnFinishHole(mainHoleLeft, listObj, true);
+        }
+        // Nếu không thì thử bên phải
+        else if (mainHoleRight != null && mainHoleRight.tag == groupTag && holeBlankRight > 0)
+        {
+            MovePeopleOnFinishHole(mainHoleRight, listObj, false);
+        }
+        else
+        {
+            Debug.LogWarning($"Không có hố nào phù hợp hoặc đủ chỗ cho nhóm với tag '{groupTag}'");
+        }
     }
 
-    private void ChangeMainHole(ref GameObject mainHole, List<GameObject> holeInstances)
+    private void MovePeopleOnFinishHole(GameObject mainHole, List<GameObject> listObj, bool isLeft)
     {
+        int holeBlank = isLeft ? holeBlankLeft : holeBlankRight;
+        int countToMove = Mathf.Min(holeBlank, listObj.Count);
+        List<GameObject> selectedPeople = listObj.GetRange(0, countToMove);
+
+        Vector3 holePos = mainHole.transform.position;
+
+        foreach (GameObject person in selectedPeople)
+        {
+            person.transform.position = holePos + Vector3.up * 2;
+
+            if (person.TryGetComponent(out PeopleMovement movement))
+                movement.FallIntoHole(holePos);
+            else
+                Debug.LogWarning($"Object {person.name} is missing PeopleMovement component.");
+        }
+
+        // Cập nhật slot trống
+        if (isLeft)
+            holeBlankLeft -= countToMove;
+        else
+            holeBlankRight -= countToMove;
+
+        listObj.RemoveRange(0, countToMove);
+
+        // Đổi hố nếu hết chỗ
+        if (isLeft && holeBlankLeft <= 0)
+            ChangeMainHole(ref mainHoleLeft);
+        else if (!isLeft && holeBlankRight <= 0)
+            ChangeMainHole(ref mainHoleRight);
+    }
+
+
+
+    private void ChangeMainHole(ref GameObject mainHole)
+    {
+        List<GameObject> holeInstances = (mainHole == mainHoleLeft) ? holeLeftInstances : holeRightInstances;
+
         if (holeInstances.Count <= 1)
         {
             Debug.LogWarning("Không còn hole nào để thay thế.");
@@ -108,72 +157,12 @@ public class FinishHoleManager : Singleton<FinishHoleManager>
             pos.z -= spacingZ;
             holeInstances[i].transform.position = pos;
         }
+
+        // Reset lại số chỗ trống cho hole mới
+        if (mainHole == mainHoleLeft)
+            holeBlankLeft = 16;
+        else if (mainHole == mainHoleRight)
+            holeBlankRight = 16;
     }
 
-    private void ContainToFinishHole(GameObject mainHole)
-    {
-        if (mainHole == null) return;
-
-        if (!Enum.TryParse(mainHole.tag, out Tag incomingTag))
-            return;
-
-        foreach (ContainArrangement contain in PeopleHoleToContainCtrl.Instance.ContainArrangements)
-        {
-            if (contain.TagContain != incomingTag)
-                continue;
-
-            foreach (GameObject person in contain.People)
-            {
-                if (person == null) continue;
-                if (person.TryGetComponent(out PeopleMovement movement))
-                {
-                    //movement.Moving(mainHole);
-
-                }
-                else
-                    Debug.LogWarning($"'{person.name}' is missing PeopleMovement component.");
-            }
-
-            break; // Chỉ xử lý contain đầu tiên khớp tag
-        }
-    }
-
-    public bool EntryHoleToFinishHole(List<GameObject> people)
-    {
-        if (people == null || people.Count == 0)
-            return false;
-
-        bool movedAny = false;
-
-        Enum.TryParse(mainHoleLeft?.tag, out Tag tagLeft);
-        Enum.TryParse(mainHoleRight?.tag, out Tag tagRight);
-
-        foreach (GameObject person in people)
-        {
-            if (person == null) continue;
-
-            if (!person.TryGetComponent(out PeopleMovement movement))
-            {
-                Debug.LogWarning($"'{person.name}' is missing PeopleMovement component.");
-                continue;
-            }
-
-            Enum.TryParse(person.tag, out Tag personTag);
-
-            if (personTag == tagLeft && mainHoleLeft != null)
-            {
-                person.SetActive(true);
-                movement.MovementInstant(mainHoleLeft);
-                movedAny = true;
-            }
-            else if (personTag == tagRight && mainHoleRight != null)
-            {
-                person.SetActive(true);
-                movement.MovementInstant(mainHoleRight);
-                movedAny = true;
-            }
-        }
-
-        return movedAny;
-    }
 }

@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 
 public partial class EventDefine : IEventParam
@@ -13,5 +14,11 @@ public partial class EventDefine : IEventParam
     public struct OnPeopleRun: IEventParam {
         public string tag;
         public Node target; 
+    }
+
+    public struct OnEntryHoleTouch : IEventParam
+    {
+        public string tag;
+        public List<GameObject> people;
     }
 }

@@ -25,12 +25,12 @@ public class Node : MonoBehaviour
 
     private void OnEnable()
     {
-        EventDispatcher.Add<OnNodeRun>(OnHoleClickedSetUp);
+        EventDispatcher.Add<OnNodeRun>(OnNodeRun);
     }
 
     private void OnDisable()
     {
-        EventDispatcher.Remove<OnNodeRun>(OnHoleClickedSetUp);
+        EventDispatcher.Remove<OnNodeRun>(OnNodeRun);
     }
 
     private void Start()
@@ -72,7 +72,7 @@ public class Node : MonoBehaviour
         }
     }
 
-    private void OnHoleClickedSetUp(IEventParam param)
+    private void OnNodeRun(IEventParam param)
     {
         if (param is OnNodeRun nodeRunEvent)
         {

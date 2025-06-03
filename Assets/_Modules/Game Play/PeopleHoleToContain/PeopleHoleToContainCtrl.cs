@@ -1,15 +1,15 @@
 ﻿using System;
 using UnityEngine;
 
-[RequireComponent(typeof(PeopleHoleToContainManager))]
+[RequireComponent(typeof(ContainManager))]
 public class PeopleHoleToContainCtrl : Singleton<PeopleHoleToContainCtrl>, ICtrl
 {
-    [SerializeField] private PeopleHoleToContainManager peopleHoleToContainManager;
+    [SerializeField] private ContainManager peopleHoleToContainManager;
     [SerializeField] private EntryHoleTouch[] hole;
     [SerializeField] private ContainArrangement[] containArrangements;
     [SerializeField] private ContainEndGame containEndGame;
 
-    public PeopleHoleToContainManager PeopleHoleToContainManager { get => peopleHoleToContainManager; set => peopleHoleToContainManager = value; }
+    public ContainManager PeopleHoleToContainManager { get => peopleHoleToContainManager; set => peopleHoleToContainManager = value; }
     public EntryHoleTouch[] Hole { get => hole; set => hole = value; }
     public ContainArrangement[] ContainArrangements { get => containArrangements; set => containArrangements = value; }
     public ContainEndGame ContainEndGame { get => containEndGame; set => containEndGame = value; }
@@ -52,7 +52,7 @@ public class PeopleHoleToContainCtrl : Singleton<PeopleHoleToContainCtrl>, ICtrl
     void LoadHoleTouch() 
     {
         if (PeopleHoleToContainManager == null)
-            PeopleHoleToContainManager = GetComponent<PeopleHoleToContainManager>();
+            PeopleHoleToContainManager = GetComponent<ContainManager>();
     }
 
     void LoadPeopleHoleToContain()

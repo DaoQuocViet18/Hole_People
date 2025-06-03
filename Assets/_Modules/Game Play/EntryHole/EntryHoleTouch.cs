@@ -4,65 +4,62 @@ using UnityEngine;
 
 public class EntryHoleTouch : MonoBehaviour
 {
-    [SerializeField] private int expectedPeopleCount = 4;
+    [SerializeField] private List<PeopleMovement> peopleInHole = new();
+    [SerializeField] private bool _shouldCheckMovedPeople = false;
 
-    private readonly List<PeopleMovement> peopleInHole = new List<PeopleMovement>();
-
-    // Sự kiện truyền ra Tag và list GameObject đã despawn đúng expectedPeopleCount
     public event Action<Tag, List<GameObject>> OnAllPeopleEntered;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out PeopleMovement movement))
+        if (other.TryGetComponent(out PeopleMovement movement) && !peopleInHole.Contains(movement))
         {
-            if (!peopleInHole.Contains(movement))
-            {
-                peopleInHole.Add(movement);
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"Object '{other.gameObject.name}' has no PeopleMovement component.");
+            peopleInHole.Add(movement);
+            _shouldCheckMovedPeople = true; // Đánh dấu cần kiểm tra
         }
     }
 
     private void Update()
     {
-        if (peopleInHole.Count < expectedPeopleCount)
+        if (!_shouldCheckMovedPeople || peopleInHole.Count == 0)
             return;
 
-        // Lọc ra những người đã moved
-        int movedCount = 0;
-        List<PeopleMovement> readyToDespawn = new List<PeopleMovement>(expectedPeopleCount);
+        List<PeopleMovement> readyToDispatch = new();
         foreach (var person in peopleInHole)
         {
-            if (person.Moved)
+            if (person != null && person.Moved)
             {
-                readyToDespawn.Add(person);
-                movedCount++;
-                if (movedCount >= expectedPeopleCount)
-                    break;
+                readyToDispatch.Add(person);
             }
         }
 
-        if (movedCount >= expectedPeopleCount)
+        if (readyToDispatch.Count > 0)
         {
-            var despawnedObjects = new List<GameObject>(expectedPeopleCount);
-            for (int i = 0; i < expectedPeopleCount; i++)
+            var dispatchedObjects = new List<GameObject>();
+            foreach (var person in readyToDispatch)
             {
-                var movement = readyToDespawn[i];
-                GameObject go = movement.gameObject;
-
-                PeopleSpawnManager.Instance.Despawn(go);
-                despawnedObjects.Add(go);
-                peopleInHole.Remove(movement);
+                dispatchedObjects.Add(person.gameObject);
             }
 
-            // Lấy tag từ object đầu tiên, parse an toàn hơn
-            Tag incomingTag = Tag.None;
-            Enum.TryParse(despawnedObjects[0].tag, out incomingTag);
+            peopleInHole.RemoveAll(p => readyToDispatch.Contains(p));
 
-            OnAllPeopleEntered?.Invoke(incomingTag, despawnedObjects);
+            // Dispatch nếu có ít nhất 1 object
+            if (dispatchedObjects.Count > 0)
+            {
+                Tag incomingTag = Tag.None;
+                Enum.TryParse(dispatchedObjects[0].tag, true, out incomingTag);
+
+                OnAllPeopleEntered?.Invoke(incomingTag, dispatchedObjects);
+
+                EventDispatcher.Dispatch(new EventDefine.OnEntryHoleTouch
+                {
+                    tag = dispatchedObjects[0].tag,
+                    people = dispatchedObjects
+                });
+            }
         }
+
+        // ✅ LUÔN duy trì kiểm tra nếu vẫn còn người
+        _shouldCheckMovedPeople = peopleInHole.Count > 0;
     }
+
 }

@@ -1,57 +1,41 @@
-﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ContainArrangement : MonoBehaviour
 {
     [SerializeField] private Tag tagContain;
     [SerializeField] private List<GameObject> people = new List<GameObject>();
-    private Vector3 positionPeople = new Vector3();
+    [SerializeField] private int maxCapacity = 32;
+
+    private static readonly Vector3 startOffset = new Vector3(1.5f, 0, -3.6f);
+    private const int maxPerRow = 4;
+    private const float spacingX = 1f;
+    private const float spacingZ = 1f;
 
     public Tag TagContain { get => tagContain; set => tagContain = value; }
     public List<GameObject> People { get => people; set => people = value; }
 
+    public int ContainBlank => Mathf.Max(0, maxCapacity - people.Count); // READ-ONLY
+
     public void Arrangement()
     {
-        positionPeople = new Vector3(1.5f, 0, -3.6f);
-
-        Debug.Log("people: " + People.Count);
-
-        int column = 0;
-        int maxPerRow = 4; // mỗi hàng 4 người
-        int placedCount = 0;
-
-        foreach (GameObject person in People)
+        int count = Mathf.Min(people.Count, maxCapacity);
+        for (int i = 0; i < count; i++)
         {
-            if (placedCount >= 32)
-            {
-                Debug.LogWarning("ContainArrangement is full (more than 32 people).");
-                break;
-            }
+            GameObject person = people[i];
+            if (person == null) continue;
 
-            // Đặt người vào vị trí
-            person.transform.position = transform.position + positionPeople;
+            int row = i / maxPerRow;
+            int col = i % maxPerRow;
 
-            // Đặt lại rotation về hướng mong muốn (ví dụ: nhìn về phía Z+)
+            Vector3 offset = new Vector3(
+                startOffset.x - (col * spacingX),
+                startOffset.y,
+            startOffset.z + (row * spacingZ)
+            );
+
+            person.transform.position = transform.position + offset;
             person.transform.rotation = Quaternion.LookRotation(Vector3.forward);
-
-            PeopleSpawnManager.Instance.SetActivePeople(person, true);
-
-            column++;
-            placedCount++;
-
-            // Cập nhật vị trí tiếp theo
-            if (column >= maxPerRow)
-            {
-                column = 0;
-                positionPeople.x = 1.5f;
-                positionPeople.z += 1; // xuống hàng
-            }
-            else
-            {
-                positionPeople.x -= 1; // sang phải
-            }
         }
     }
 }

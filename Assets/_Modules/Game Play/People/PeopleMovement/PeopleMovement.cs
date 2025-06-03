@@ -11,7 +11,7 @@ public class PeopleMovement : MonoBehaviour
     [SerializeField] private float rotationSpeed = 5f;
     [SerializeField] private bool isFalling = false; // để ngăn di chuyển tiếp khi rơi vào hole
     private Vector3 target;
-    private bool moved = false;
+    [SerializeField] private bool moved = false;
     public bool Moved => moved;
 
     public void Moving(List<Node> movingNodes)
@@ -135,5 +135,13 @@ public class PeopleMovement : MonoBehaviour
                  });
     }
 
+    public void FallIntoHole(Vector3 holePosition)
+    {
+        float targetY = holePosition.y - 2f;
+        Transform tf = transform;
+
+        tf.DOMoveY(targetY, 0.2f)
+          .SetEase(Ease.InQuad);
+    }
 
 }
