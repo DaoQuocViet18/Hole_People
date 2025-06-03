@@ -3283,9 +3283,9 @@ GameObject:
   - component: {fileID: 8779163313144791216}
   - component: {fileID: 7166558159596501586}
   - component: {fileID: 6916466412979978022}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GroupPeopleGreen
-  m_TagString: Untagged
+  m_TagString: Green
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

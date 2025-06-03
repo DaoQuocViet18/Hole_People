@@ -3,11 +3,13 @@ using UnityEngine;
 
 public class ContainEndGame : MonoBehaviour
 {
-    public List<GameObject> people = new List<GameObject>();
+    private List<GameObject> people = new List<GameObject>();
+
+    public List<GameObject> People { get => people; set => people = value; }
 
     public void Arrangement()
     {
-        foreach (GameObject person in people)
+        foreach (GameObject person in People)
         {
             person.transform.position = this.transform.position;
             

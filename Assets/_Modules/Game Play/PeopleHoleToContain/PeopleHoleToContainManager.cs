@@ -20,16 +20,22 @@ public class PeopleHoleToContainManager : MonoBehaviour
         if (matchedPeople.Count == 0)
             return;
 
+        //bool moved = FinishHoleManager.Instance.EntryHoleToFinishHole(despawnedObjects);
+        //if (moved)
+        //{
+        //    return;
+        //}
+
         ContainArrangement targetContain = FindOrAssignContain(tagPeople);
 
         if (targetContain != null)
         {
-            targetContain.people.AddRange(matchedPeople);
+            targetContain.People.AddRange(matchedPeople);
             targetContain.Arrangement();
         }
         else if (PeopleHoleToContainCtrl.Instance.ContainEndGame != null)
         {
-            PeopleHoleToContainCtrl.Instance.ContainEndGame.people.AddRange(matchedPeople);
+            PeopleHoleToContainCtrl.Instance.ContainEndGame.People.AddRange(matchedPeople);
             PeopleHoleToContainCtrl.Instance.ContainEndGame.Arrangement();
         }
     }
@@ -46,15 +52,15 @@ public class PeopleHoleToContainManager : MonoBehaviour
     {
         foreach (var contain in PeopleHoleToContainCtrl.Instance.ContainArrangements)
         {
-            if (contain.tagContain == incomingTag && contain.people.Count < 32)
+            if (contain.TagContain == incomingTag && contain.People.Count < 32)
                 return contain;
         }
 
         foreach (var contain in PeopleHoleToContainCtrl.Instance.ContainArrangements)
         {
-            if (contain.tagContain == Tag.None)
+            if (contain.TagContain == Tag.None)
             {
-                contain.tagContain = incomingTag;
+                contain.TagContain = incomingTag;
                 return contain;
             }
         }

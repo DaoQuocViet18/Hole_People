@@ -34,7 +34,7 @@ public class InputManager : MonoBehaviour
         Debug.Log("groupTag: " + groupTag);
 
         // Gửi sự kiện click hole
-        EventDispatcher.Dispatch(new EventDefine.OnClickHole { tag = groupTag });
+        EventDispatcher.Dispatch(new EventDefine.OnNodeRun { tag = groupTag });
 
         // Chờ 1 frame để các listener phản hồi
         yield return null;
@@ -48,7 +48,7 @@ public class InputManager : MonoBehaviour
             Node nodeBelow = hitBelow.GetComponent<Node>();
             if (nodeBelow != null)
             {
-                EventDispatcher.Dispatch(new EventDefine.OnPeopleFindHole
+                EventDispatcher.Dispatch(new EventDefine.OnPeopleRun
                 {
                     tag = groupTag,
                     target = nodeBelow

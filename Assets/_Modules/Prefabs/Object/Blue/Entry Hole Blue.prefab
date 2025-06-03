@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8159906427281639698}
   m_Layer: 7
-  m_Name: Hole Blue 1
+  m_Name: Entry Hole Blue
   m_TagString: Blue
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -152,12 +152,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 3977893646091889844}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6466fbf5bd218c468dce210cdea058e, type: 3}
+  m_Script: {fileID: 11500000, guid: 03cdd5b41d710294c936bae8038b7f52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   expectedPeopleCount: 4
-  people: []
-  clearDelay: 1
 --- !u!1 &9108808378754094633
 GameObject:
   m_ObjectHideFlags: 0

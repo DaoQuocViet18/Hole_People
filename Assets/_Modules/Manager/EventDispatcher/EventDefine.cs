@@ -5,12 +5,12 @@ public partial class EventDefine : IEventParam
 {
     public struct OnLoadScene : IEventParam { }
 
-    public struct OnClickHole : IEventParam
+    public struct OnNodeRun : IEventParam
     {
         public string tag;
     }
 
-    public struct OnPeopleFindHole: IEventParam {
+    public struct OnPeopleRun: IEventParam {
         public string tag;
         public Node target; 
     }

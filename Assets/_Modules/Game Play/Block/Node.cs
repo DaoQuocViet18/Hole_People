@@ -25,12 +25,12 @@ public class Node : MonoBehaviour
 
     private void OnEnable()
     {
-        EventDispatcher.Add<OnClickHole>(OnClickHole);
+        EventDispatcher.Add<OnNodeRun>(OnHoleClickedSetUp);
     }
 
     private void OnDisable()
     {
-        EventDispatcher.Remove<OnClickHole>(OnClickHole);
+        EventDispatcher.Remove<OnNodeRun>(OnHoleClickedSetUp);
     }
 
     private void Start()
@@ -72,12 +72,12 @@ public class Node : MonoBehaviour
         }
     }
 
-    private void OnClickHole(IEventParam param)
+    private void OnHoleClickedSetUp(IEventParam param)
     {
-        if (param is OnClickHole clickHoleEvent)
+        if (param is OnNodeRun nodeRunEvent)
         {
             //gameObject.GetComponent<Renderer>().material.color = Color.white;
-            string tag = clickHoleEvent.tag;
+            string tag = nodeRunEvent.tag;
 
             GCost = 0;
             HCost = 0;

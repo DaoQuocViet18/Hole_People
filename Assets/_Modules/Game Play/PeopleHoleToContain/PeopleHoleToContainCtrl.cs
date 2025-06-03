@@ -5,12 +5,12 @@ using UnityEngine;
 public class PeopleHoleToContainCtrl : Singleton<PeopleHoleToContainCtrl>, ICtrl
 {
     [SerializeField] private PeopleHoleToContainManager peopleHoleToContainManager;
-    [SerializeField] private HoleTouch[] hole;
+    [SerializeField] private EntryHoleTouch[] hole;
     [SerializeField] private ContainArrangement[] containArrangements;
     [SerializeField] private ContainEndGame containEndGame;
 
     public PeopleHoleToContainManager PeopleHoleToContainManager { get => peopleHoleToContainManager; set => peopleHoleToContainManager = value; }
-    public HoleTouch[] Hole { get => hole; set => hole = value; }
+    public EntryHoleTouch[] Hole { get => hole; set => hole = value; }
     public ContainArrangement[] ContainArrangements { get => containArrangements; set => containArrangements = value; }
     public ContainEndGame ContainEndGame { get => containEndGame; set => containEndGame = value; }
 
@@ -58,7 +58,7 @@ public class PeopleHoleToContainCtrl : Singleton<PeopleHoleToContainCtrl>, ICtrl
     void LoadPeopleHoleToContain()
     {
         if (Hole == null || Hole.Length == 0)
-            Hole = UnityEngine.Object.FindObjectsByType<HoleTouch>(FindObjectsSortMode.None);
+            Hole = UnityEngine.Object.FindObjectsByType<EntryHoleTouch>(FindObjectsSortMode.None);
     }
 
     void LoadContainArrangement()

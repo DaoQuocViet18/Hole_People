@@ -13,10 +13,9 @@ public enum Tag
     Green
 }
 
-[RequireComponent(typeof(PeopleController))]
 public class PeopleFindHole : MonoBehaviour
 {
-    [SerializeField] private GroupPeopleMovementCtrl groupPeopleController;
+    [SerializeField] private GroupPeopleMovement groupPeopleController;
 
     [Header("Lists in Gameplay")]
     private List<Node> resultPath = new List<Node>();
@@ -31,7 +30,7 @@ public class PeopleFindHole : MonoBehaviour
     [Header("Tag Group")]
     [SerializeField] private Tag tagSelf;
     private List<Node> movingNodes = new List<Node>();
-    private bool isMoving = false;
+    [SerializeField] private bool isMoving = false;
 
     private void Awake()
     {
@@ -46,62 +45,45 @@ public class PeopleFindHole : MonoBehaviour
     void LoadComponents ()
     {
         if (groupPeopleController == null)
-            groupPeopleController = GetComponentInParent<GroupPeopleMovementCtrl>();
+            groupPeopleController = GetComponentInParent<GroupPeopleMovement>();
     }
 
-    private void OnEnable()
-    {
-        EventDispatcher.Add<EventDefine.OnPeopleFindHole>(OnPeopleFindHole);
-    }
 
-    private void OnDisable()
+    public List<Node> FindHole(Node targetNode)
     {
-        EventDispatcher.Remove<EventDefine.OnPeopleFindHole>(OnPeopleFindHole);
-    }
+        if (isMoving) return null;
 
-    private void OnPeopleFindHole(IEventParam param)
-    {
-        if (param is OnPeopleFindHole peopleFindHoleEvent && !isMoving)
-        {
-            this.target = peopleFindHoleEvent.target;
-            if (Enum.TryParse(peopleFindHoleEvent.tag, out Tag incomingTag))
-            {
-                if (target != null && tagSelf == incomingTag)
-                {
-                    Setup();
-                }
-            }
-        }
-    }
+        target = targetNode;
+        if (target == null)
+            return null;
 
-    void Setup()
-    {
+        // Lấy Node hiện tại từ raycast dưới chân
         RaycastHit hit;
         Vector3 rayOrigin = transform.position + Vector3.up * 0.5f;
-
         if (Physics.Raycast(rayOrigin, Vector3.down, out hit, 5f, LayerMask.GetMask("Block")))
         {
             player = hit.collider.GetComponent<Node>();
         }
 
-        if (player == null || target == null)
+        if (player == null)
         {
-            Debug.LogError("Player hoặc Target bị null. Kiểm tra lại thiết lập.");
-            return;
+            Debug.LogError("[FindHole] Không tìm thấy node hiện tại từ raycast.");
+            return null;
         }
 
         currentNode = player;
-
         frontierNodes.Clear();
         exploredNodes.Clear();
+        movingNodes.Clear();
+
+        // Thêm các node lân cận không bị chặn
         frontierNodes.AddRange(currentNode.Neighbors.Where(n => !n.IsObstacle));
 
         foreach (var node in frontierNodes)
         {
-            node.GCost = Vector3.Distance(player.transform.position, node.transform.position);
+            node.GCost = Vector3.Distance(currentNode.transform.position, node.transform.position);
             node.HCost = Vector3.Distance(node.transform.position, target.transform.position);
             node.PreviousNode = currentNode;
-
         }
 
         exploredNodes.Add(currentNode);
@@ -109,13 +91,17 @@ public class PeopleFindHole : MonoBehaviour
         if (FindPath())
         {
             isMoving = true;
-            //Debug.Log("Đã tìm thấy đường đi");
-
             HighlightPath();
-            movingNodes.Reverse();
-            groupPeopleController.PeopleController.MovePeople(movingNodes);
+            movingNodes.Reverse(); // Đảo ngược để đi từ hiện tại đến đích
+
+            //groupPeopleController.PeopleController.MovePeople(movingNodes);
+            return movingNodes;
         }
+
+        return null;
     }
+
+
 
     void HighlightPath()
     {

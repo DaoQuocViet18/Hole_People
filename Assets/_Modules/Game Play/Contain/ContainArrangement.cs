@@ -5,21 +5,24 @@ using UnityEngine;
 
 public class ContainArrangement : MonoBehaviour
 {
-    public Tag tagContain;
-    public List<GameObject> people = new List<GameObject>();
-    public Vector3 positionPeople = new Vector3();
+    [SerializeField] private Tag tagContain;
+    [SerializeField] private List<GameObject> people = new List<GameObject>();
+    private Vector3 positionPeople = new Vector3();
+
+    public Tag TagContain { get => tagContain; set => tagContain = value; }
+    public List<GameObject> People { get => people; set => people = value; }
 
     public void Arrangement()
     {
         positionPeople = new Vector3(1.5f, 0, -3.6f);
 
-        Debug.Log("people: " + people.Count);
+        Debug.Log("people: " + People.Count);
 
         int column = 0;
         int maxPerRow = 4; // mỗi hàng 4 người
         int placedCount = 0;
 
-        foreach (GameObject person in people)
+        foreach (GameObject person in People)
         {
             if (placedCount >= 32)
             {

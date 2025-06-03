@@ -20,6 +20,41 @@ public class PeopleMovement : MonoBehaviour
         StartCoroutine(MoveThroughNodes(movingNodes));
     }
 
+    public void Moving(GameObject movingObj)
+    {
+        if (movingObj == null) return;
+
+        Vector3 targetPosition = movingObj.transform.position;
+        targetPosition.y = transform.position.y; // Giữ nguyên chiều cao hiện tại
+
+        Vector3 direction = (targetPosition - transform.position).normalized;
+        if (direction != Vector3.zero)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            transform.DORotateQuaternion(lookRotation, 1f / rotationSpeed);
+        }
+
+        float distance = Vector3.Distance(transform.position, targetPosition);
+        float duration = (distance / moveSpeed) * movementSlowDownFactor;
+
+        transform.DOMove(targetPosition, duration).SetEase(Ease.Linear);
+    }
+
+    public void MovementInstant(GameObject movingObj)
+    {
+        transform.position = movingObj.transform.position;
+        transform.position += Vector3.up * 2;
+
+        transform.DOMoveY(movingObj.transform.position.y - 2f, 0.2f)
+                              .SetEase(Ease.InQuad)
+                              .OnComplete(() =>
+                              {
+                                  moved = true;
+                                  //gameObject.SetActive(false);
+                              });
+    }
+
+
     private IEnumerator MoveThroughNodes(List<Node> movingNodes)
     {
         if (movingNodes == null || movingNodes.Count == 0)

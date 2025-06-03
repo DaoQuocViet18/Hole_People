@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 933091428354568058}
   m_Layer: 7
   m_Name: Torus
-  m_TagString: Red
+  m_TagString: Green
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -65,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2f5467bb79992d645bd349b04c951a53, type: 2}
+  - {fileID: 2100000, guid: fb0f62c62b28d8e43a638a530e204edd, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -121,10 +121,10 @@ GameObject:
   - component: {fileID: 17348318977100562}
   - component: {fileID: 7245739688864282607}
   - component: {fileID: 7851262816477184888}
-  - component: {fileID: 980966691242160152}
+  - component: {fileID: 2848670585759661119}
   m_Layer: 7
   m_Name: Cylinder
-  m_TagString: Red
+  m_TagString: Green
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -219,7 +219,7 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 2534964839176971238, guid: fe85006b577fcbc45aba60f6211f5ca1, type: 3}
---- !u!114 &980966691242160152
+--- !u!114 &2848670585759661119
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -228,11 +228,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5004594840849641207}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6466fbf5bd218c468dce210cdea058e, type: 3}
+  m_Script: {fileID: 11500000, guid: 03cdd5b41d710294c936bae8038b7f52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   expectedPeopleCount: 4
-  people: []
 --- !u!1 &5910556951424751886
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,8 +242,8 @@ GameObject:
   m_Component:
   - component: {fileID: 9003414119989283695}
   m_Layer: 7
-  m_Name: Hole Red 1
-  m_TagString: Red
+  m_Name: Entry Hole Green
+  m_TagString: Green
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
