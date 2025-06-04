@@ -976,10 +976,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17e926228092ca4d90369810626ad54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
-  movementSlowDownFactor: 2
-  rotationSpeed: 5
+  movementInfo:
+    MoveSpeed: 10
+    MovementSlowDownFactor: 2
+    RotationSpeed: 5
   isFalling: 0
+  moved: 0
 --- !u!1 &2283833160770268447
 GameObject:
   m_ObjectHideFlags: 0
@@ -1252,10 +1254,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17e926228092ca4d90369810626ad54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
-  movementSlowDownFactor: 2
-  rotationSpeed: 5
+  movementInfo:
+    MoveSpeed: 10
+    MovementSlowDownFactor: 2
+    RotationSpeed: 5
   isFalling: 0
+  moved: 0
 --- !u!1 &2413133908584146145
 GameObject:
   m_ObjectHideFlags: 0
@@ -1420,10 +1424,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17e926228092ca4d90369810626ad54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
-  movementSlowDownFactor: 2
-  rotationSpeed: 5
+  movementInfo:
+    MoveSpeed: 10
+    MovementSlowDownFactor: 2
+    RotationSpeed: 5
   isFalling: 0
+  moved: 0
 --- !u!1 &2865647416101469330
 GameObject:
   m_ObjectHideFlags: 0
@@ -3688,10 +3694,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17e926228092ca4d90369810626ad54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
-  movementSlowDownFactor: 2
-  rotationSpeed: 5
+  movementInfo:
+    MoveSpeed: 10
+    MovementSlowDownFactor: 2
+    RotationSpeed: 5
   isFalling: 0
+  moved: 0
 --- !u!1 &8787877670451637287
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,15 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using static EventDefine;
-
-public enum Tag
-{
-    None,
-    Red,
-    Blue,
-    Green
-}
 
 public class PeopleFindHole : MonoBehaviour
 {

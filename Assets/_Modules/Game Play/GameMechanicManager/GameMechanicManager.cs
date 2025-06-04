@@ -107,13 +107,13 @@ public class GameMechanicManager : Singleton<GameMechanicManager>
         if (FinishHoleManager.Instance.MainHoleLeft != null &&
             FinishHoleManager.Instance.MainHoleLeft.tag == peopleRunEvent.tag)
         {
-            numberGroup += FinishHoleManager.Instance.LeftHoleSide.HoleBlank / 4;
+            numberGroup += FinishHoleManager.Instance.LeftFHInfo.HoleBlank / 4;
         }
 
         if (FinishHoleManager.Instance.MainHoleRight != null &&
             FinishHoleManager.Instance.MainHoleRight.tag == peopleRunEvent.tag)
         {
-            numberGroup += FinishHoleManager.Instance.RightHoleSide.HoleBlank / 4;
+            numberGroup += FinishHoleManager.Instance.RightFHInfo.HoleBlank / 4;
         }
 
 

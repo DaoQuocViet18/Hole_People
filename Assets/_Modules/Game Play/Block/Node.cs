@@ -6,19 +6,22 @@ using static EventDefine;
 public class Node : MonoBehaviour
 {
     [Header("Node Information")]
-    private float gCost;
-    private float hCost;
-    public float GCost { get => gCost; set => gCost = value; }
-    public float HCost { get => hCost; set => hCost = value; }
-    public float FCost => GCost + HCost;
 
+    [SerializeField] private NodeCostInfo costInfo;
 
     [SerializeField] private Node previousNode;
     [SerializeField] private List<Node> neighbors = new List<Node>();
     [SerializeField] private Vector3 position;
     [SerializeField] private bool isObstacle = false;
+
+    // Truy cập cost thông qua struct
+    public float GCost { get => costInfo.GCost; set => costInfo.GCost = value; }
+    public float HCost { get => costInfo.HCost; set => costInfo.HCost = value; }
+    public float FCost => costInfo.FCost;
+
     public Node PreviousNode { get => previousNode; set => previousNode = value; }
     public List<Node> Neighbors { get => neighbors; set => neighbors = value; }
+
     public Vector3 Position { get => position; set => position = value; }
     public bool IsObstacle { get => isObstacle; set => isObstacle = value; }
 

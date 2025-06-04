@@ -14,7 +14,7 @@ public class GroupOfPeople
 }
 
 [System.Serializable]
-public class HoleSideInfo
+public class FinishHoleInfo
 {
     public int HoleBlank;
     public List<GameObject> HolePrefabs = new List<GameObject>();

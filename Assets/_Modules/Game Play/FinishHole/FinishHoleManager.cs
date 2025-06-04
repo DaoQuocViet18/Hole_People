@@ -8,48 +8,48 @@ public class FinishHoleManager : Singleton<FinishHoleManager>
     [SerializeField] private GameObject mainHoleLeft;
     [SerializeField] private GameObject mainHoleRight;
 
-    [Header("Hole Sides Data")]
-    [SerializeField] private HoleSideInfo leftHoleSide;
-    [SerializeField] private HoleSideInfo rightHoleSide;
+    [Header("Finish Hole Info")]
+    [SerializeField] private FinishHoleInfo leftFHInfo;
+    [SerializeField] private FinishHoleInfo rightFHInfo;
 
-    [Header("Spawn Configs")]
-    [SerializeField] private HoleSpawnConfig leftHoleConfig;
-    [SerializeField] private HoleSpawnConfig rightHoleConfig;
+    [Header("Finish Hole Spawn Info")]
+    [SerializeField] private FinishHoleSpawnInfo leftFHSpawnInfo;
+    [SerializeField] private FinishHoleSpawnInfo rightFHSpawnInfo;
 
     public GameObject MainHoleLeft => mainHoleLeft;
     public GameObject MainHoleRight => mainHoleRight;
 
-    public HoleSideInfo LeftHoleSide => leftHoleSide;
-    public HoleSideInfo RightHoleSide => rightHoleSide;
+    public FinishHoleInfo LeftFHInfo => leftFHInfo;
+    public FinishHoleInfo RightFHInfo => rightFHInfo;
 
-    public HoleSpawnConfig LeftHoleConfig => leftHoleConfig;
-    public HoleSpawnConfig RightHoleConfig => rightHoleConfig;
+    public FinishHoleSpawnInfo LeftFHSpawnInfo => leftFHSpawnInfo;
+    public FinishHoleSpawnInfo RightFHSpawnInfo => rightFHSpawnInfo;
 
     protected override void ResetValue()
     {
         // Reset values here if needed
-        leftHoleSide.HoleBlank = 16;
-        leftHoleConfig.StartPosition = new Vector3(0, 0, -35);
-        leftHoleConfig.SpacingZ = 7f;
+        leftFHInfo.HoleBlank = 16;
+        leftFHSpawnInfo.StartPosition = new Vector3(0, 0, -35);
+        leftFHSpawnInfo.SpacingZ = 7f;
 
-        rightHoleSide.HoleBlank = 16;
-        rightHoleConfig.StartPosition = new Vector3(-10, 0, -35);
-        rightHoleConfig.SpacingZ = 7f;
+        rightFHInfo.HoleBlank = 16;
+        rightFHSpawnInfo.StartPosition = new Vector3(-10, 0, -35);
+        rightFHSpawnInfo.SpacingZ = 7f;
     }
 
     private void Start()
     {
-        leftHoleSide.HoleInstances = SpawnHoles(leftHoleSide.HolePrefabs, leftHoleConfig);
-        rightHoleSide.HoleInstances = SpawnHoles(rightHoleSide.HolePrefabs, rightHoleConfig);
+        leftFHInfo.HoleInstances = SpawnHoles(leftFHInfo.HolePrefabs, leftFHSpawnInfo);
+        rightFHInfo.HoleInstances = SpawnHoles(rightFHInfo.HolePrefabs, rightFHSpawnInfo);
 
-        if (leftHoleSide.HoleInstances.Count > 0)
-            mainHoleLeft = leftHoleSide.HoleInstances[0];
-        if (rightHoleSide.HoleInstances.Count > 0)
-            mainHoleRight = rightHoleSide.HoleInstances[0];
+        if (leftFHInfo.HoleInstances.Count > 0)
+            mainHoleLeft = leftFHInfo.HoleInstances[0];
+        if (rightFHInfo.HoleInstances.Count > 0)
+            mainHoleRight = rightFHInfo.HoleInstances[0];
     }
 
 
-    private List<GameObject> SpawnHoles(List<GameObject> prefabs, HoleSpawnConfig config)
+    private List<GameObject> SpawnHoles(List<GameObject> prefabs, FinishHoleSpawnInfo config)
     {
         List<GameObject> instances = new();
         Vector3 currentPos = config.StartPosition;
@@ -66,9 +66,9 @@ public class FinishHoleManager : Singleton<FinishHoleManager>
 
     public bool CheckTagFinishHole(Tag tag)
     {
-        if (mainHoleLeft != null && mainHoleLeft.tag == tag.ToString() && leftHoleSide.HoleBlank > 0)
+        if (mainHoleLeft != null && mainHoleLeft.tag == tag.ToString() && leftFHInfo.HoleBlank > 0)
             return true;
-        if (mainHoleRight != null && mainHoleRight.tag == tag.ToString() && rightHoleSide.HoleBlank > 0)
+        if (mainHoleRight != null && mainHoleRight.tag == tag.ToString() && rightFHInfo.HoleBlank > 0)
             return true;
         return false;
     }
@@ -90,9 +90,9 @@ public class FinishHoleManager : Singleton<FinishHoleManager>
         if (string.IsNullOrEmpty(tag) && people.Count > 0)
             tag = people[0].tag;
 
-        if (mainHoleLeft != null && mainHoleLeft.tag == tag && leftHoleSide.HoleBlank > 0)
+        if (mainHoleLeft != null && mainHoleLeft.tag == tag && leftFHInfo.HoleBlank > 0)
             MovePeopleToHole(mainHoleLeft, people, true);
-        else if (mainHoleRight != null && mainHoleRight.tag == tag && rightHoleSide.HoleBlank > 0)
+        else if (mainHoleRight != null && mainHoleRight.tag == tag && rightFHInfo.HoleBlank > 0)
             MovePeopleToHole(mainHoleRight, people, false);
         else
             Debug.LogWarning($"No suitable finish hole available for tag '{tag}'");
@@ -100,7 +100,7 @@ public class FinishHoleManager : Singleton<FinishHoleManager>
 
     private void MovePeopleToHole(GameObject mainHole, List<GameObject> people, bool isLeft)
     {
-        HoleSideInfo side = isLeft ? leftHoleSide : rightHoleSide;
+        FinishHoleInfo side = isLeft ? leftFHInfo : rightFHInfo;
         int moveCount = Mathf.Min(side.HoleBlank, people.Count);
         List<GameObject> selected = people.GetRange(0, moveCount);
 
@@ -120,11 +120,11 @@ public class FinishHoleManager : Singleton<FinishHoleManager>
 
         if (side.HoleBlank <= 0)
         {
-            ChangeMainHole(ref mainHole, side, isLeft ? leftHoleConfig : rightHoleConfig);
+            ChangeMainHole(ref mainHole, side, isLeft ? leftFHSpawnInfo : rightFHSpawnInfo);
         }
     }
 
-    private void ChangeMainHole(ref GameObject currentHole, HoleSideInfo side, HoleSpawnConfig config)
+    private void ChangeMainHole(ref GameObject currentHole, FinishHoleInfo side, FinishHoleSpawnInfo config)
     {
         if (side.HoleInstances.Count <= 1)
         {
