@@ -4,49 +4,61 @@ using UnityEngine;
 
 public class FinishHoleManager : Singleton<FinishHoleManager>
 {
+    [Header("Main Holes")]
     [SerializeField] private GameObject mainHoleLeft;
     [SerializeField] private GameObject mainHoleRight;
-    [SerializeField] private List<GameObject> holeLeftPrefabs = new List<GameObject>();
-    [SerializeField] private List<GameObject> holeRightPrefabs = new List<GameObject>();
 
-    [SerializeField] private List<GameObject> holeLeftInstances = new List<GameObject>();
-    [SerializeField] private List<GameObject> holeRightInstances = new List<GameObject>();
+    [Header("Hole Sides Data")]
+    [SerializeField] private HoleSideInfo leftHoleSide;
+    [SerializeField] private HoleSideInfo rightHoleSide;
 
-    [SerializeField] private int holeBlankLeft = 16;
-    [SerializeField] private int holeBlankRight = 16;
+    [Header("Spawn Configs")]
+    [SerializeField] private HoleSpawnConfig leftHoleConfig;
+    [SerializeField] private HoleSpawnConfig rightHoleConfig;
 
-    [SerializeField] private Vector3 startPositionHoleLeft = new Vector3(0, 0, -35);
-    [SerializeField] private Vector3 startPositionHoleRight = new Vector3(-10, 0, -35);
-    [SerializeField] private float spacingZ = 7f;
+    public GameObject MainHoleLeft => mainHoleLeft;
+    public GameObject MainHoleRight => mainHoleRight;
 
-    public List<GameObject> HoleLeftInstances { get => holeLeftInstances; set => holeLeftInstances = value; }
-    public List<GameObject> HoleRightInstances { get => holeRightInstances; set => holeRightInstances = value; }
-    public GameObject MainHoleLeft { get => mainHoleLeft; set => mainHoleLeft = value; }
-    public GameObject MainHoleRight { get => mainHoleRight; set => mainHoleRight = value; }
-    public int HoleBlankLeft { get => holeBlankLeft; set => holeBlankLeft = value; }
-    public int HoleBlankRight { get => holeBlankRight; set => holeBlankRight = value; }
+    public HoleSideInfo LeftHoleSide => leftHoleSide;
+    public HoleSideInfo RightHoleSide => rightHoleSide;
 
-    void Start()
+    public HoleSpawnConfig LeftHoleConfig => leftHoleConfig;
+    public HoleSpawnConfig RightHoleConfig => rightHoleConfig;
+
+    protected override void ResetValue()
     {
-        HoleLeftInstances = SpawnHoles(holeLeftPrefabs, startPositionHoleLeft);
-        HoleRightInstances = SpawnHoles(holeRightPrefabs, startPositionHoleRight);
+        // Reset values here if needed
+        leftHoleSide.HoleBlank = 16;
+        leftHoleConfig.StartPosition = new Vector3(0, 0, -35);
+        leftHoleConfig.SpacingZ = 7f;
 
-        if (HoleLeftInstances.Count > 0)
-            MainHoleLeft = HoleLeftInstances[0];
-        if (HoleRightInstances.Count > 0)
-            MainHoleRight = HoleRightInstances[0];
+        rightHoleSide.HoleBlank = 16;
+        rightHoleConfig.StartPosition = new Vector3(-10, 0, -35);
+        rightHoleConfig.SpacingZ = 7f;
     }
 
-    private List<GameObject> SpawnHoles(List<GameObject> holePrefabs, Vector3 startPosition)
+    private void Start()
     {
-        Vector3 currentPos = startPosition;
-        List<GameObject> instances = new List<GameObject>();
+        leftHoleSide.HoleInstances = SpawnHoles(leftHoleSide.HolePrefabs, leftHoleConfig);
+        rightHoleSide.HoleInstances = SpawnHoles(rightHoleSide.HolePrefabs, rightHoleConfig);
 
-        foreach (var prefab in holePrefabs)
+        if (leftHoleSide.HoleInstances.Count > 0)
+            mainHoleLeft = leftHoleSide.HoleInstances[0];
+        if (rightHoleSide.HoleInstances.Count > 0)
+            mainHoleRight = rightHoleSide.HoleInstances[0];
+    }
+
+
+    private List<GameObject> SpawnHoles(List<GameObject> prefabs, HoleSpawnConfig config)
+    {
+        List<GameObject> instances = new();
+        Vector3 currentPos = config.StartPosition;
+
+        foreach (var prefab in prefabs)
         {
             GameObject instance = Instantiate(prefab, currentPos, Quaternion.identity);
             instances.Add(instance);
-            currentPos.z -= spacingZ;
+            currentPos.z -= config.SpacingZ;
         }
 
         return instances;
@@ -54,9 +66,9 @@ public class FinishHoleManager : Singleton<FinishHoleManager>
 
     public bool CheckTagFinishHole(Tag tag)
     {
-        if (mainHoleLeft.tag == tag.ToString() && holeBlankLeft > 0)
+        if (mainHoleLeft != null && mainHoleLeft.tag == tag.ToString() && leftHoleSide.HoleBlank > 0)
             return true;
-        else if (mainHoleRight.tag == tag.ToString() && holeBlankRight > 0)
+        if (mainHoleRight != null && mainHoleRight.tag == tag.ToString() && rightHoleSide.HoleBlank > 0)
             return true;
         return false;
     }
@@ -65,104 +77,78 @@ public class FinishHoleManager : Singleton<FinishHoleManager>
     {
         if (parentObj == null) return;
 
-        List<GameObject> listObj = new();
-        PeopleMovement[] peopleMovements = parentObj.GetComponentsInChildren<PeopleMovement>(true);
-
-        foreach (var movement in peopleMovements)
+        List<GameObject> people = new();
+        PeopleMovement[] movements = parentObj.GetComponentsInChildren<PeopleMovement>(true);
+        foreach (var move in movements)
         {
-            if (movement != null)
-                listObj.Add(movement.gameObject);
+            if (move != null) people.Add(move.gameObject);
         }
 
-        if (listObj.Count == 0) return;
+        if (people.Count == 0) return;
 
-        // Lấy tag từ parent hoặc từ phần tử đầu tiên nếu cần
-        string groupTag = parentObj.tag;
-        if (string.IsNullOrEmpty(groupTag) && listObj.Count > 0)
-            groupTag = listObj[0].tag;
+        string tag = parentObj.tag;
+        if (string.IsNullOrEmpty(tag) && people.Count > 0)
+            tag = people[0].tag;
 
-        // Ưu tiên hố bên trái
-        if (mainHoleLeft != null && mainHoleLeft.tag == groupTag && holeBlankLeft > 0)
-        {
-            MovePeopleOnFinishHole(mainHoleLeft, listObj, true);
-        }
-        // Nếu không thì thử bên phải
-        else if (mainHoleRight != null && mainHoleRight.tag == groupTag && holeBlankRight > 0)
-        {
-            MovePeopleOnFinishHole(mainHoleRight, listObj, false);
-        }
+        if (mainHoleLeft != null && mainHoleLeft.tag == tag && leftHoleSide.HoleBlank > 0)
+            MovePeopleToHole(mainHoleLeft, people, true);
+        else if (mainHoleRight != null && mainHoleRight.tag == tag && rightHoleSide.HoleBlank > 0)
+            MovePeopleToHole(mainHoleRight, people, false);
         else
-        {
-            Debug.LogWarning($"Không có hố nào phù hợp hoặc đủ chỗ cho nhóm với tag '{groupTag}'");
-        }
+            Debug.LogWarning($"No suitable finish hole available for tag '{tag}'");
     }
 
-    private void MovePeopleOnFinishHole(GameObject mainHole, List<GameObject> listObj, bool isLeft)
+    private void MovePeopleToHole(GameObject mainHole, List<GameObject> people, bool isLeft)
     {
-        int holeBlank = isLeft ? holeBlankLeft : holeBlankRight;
-        int countToMove = Mathf.Min(holeBlank, listObj.Count);
-        List<GameObject> selectedPeople = listObj.GetRange(0, countToMove);
+        HoleSideInfo side = isLeft ? leftHoleSide : rightHoleSide;
+        int moveCount = Mathf.Min(side.HoleBlank, people.Count);
+        List<GameObject> selected = people.GetRange(0, moveCount);
 
         Vector3 holePos = mainHole.transform.position;
 
-        foreach (GameObject person in selectedPeople)
+        foreach (GameObject person in selected)
         {
-            person.transform.position = holePos + Vector3.up * 2;
-
-            if (person.TryGetComponent(out PeopleMovement movement))
-                movement.FallIntoHole(holePos);
+            person.transform.position = holePos + Vector3.up * 4;
+            if (person.TryGetComponent(out PeopleMovement move))
+                move.FallIntoHole(holePos);
             else
-                Debug.LogWarning($"Object {person.name} is missing PeopleMovement component.");
+                Debug.LogWarning($"{person.name} missing PeopleMovement.");
         }
 
-        // Cập nhật slot trống
-        if (isLeft)
-            holeBlankLeft -= countToMove;
-        else
-            holeBlankRight -= countToMove;
+        side.HoleBlank -= moveCount;
+        people.RemoveRange(0, moveCount);
 
-        listObj.RemoveRange(0, countToMove);
-
-        // Đổi hố nếu hết chỗ
-        if (isLeft && holeBlankLeft <= 0)
-            ChangeMainHole(ref mainHoleLeft);
-        else if (!isLeft && holeBlankRight <= 0)
-            ChangeMainHole(ref mainHoleRight);
+        if (side.HoleBlank <= 0)
+        {
+            ChangeMainHole(ref mainHole, side, isLeft ? leftHoleConfig : rightHoleConfig);
+        }
     }
 
-
-
-    private void ChangeMainHole(ref GameObject mainHole)
+    private void ChangeMainHole(ref GameObject currentHole, HoleSideInfo side, HoleSpawnConfig config)
     {
-        List<GameObject> holeInstances = (mainHole == mainHoleLeft) ? holeLeftInstances : holeRightInstances;
-
-        if (holeInstances.Count <= 1)
+        if (side.HoleInstances.Count <= 1)
         {
-            Debug.LogWarning("Không còn hole nào để thay thế.");
+            Debug.LogWarning("No more holes to replace.");
             return;
         }
 
-        GameObject oldMainHole = mainHole;
-        mainHole.SetActive(false);
+        GameObject oldHole = currentHole;
+        oldHole.SetActive(false);
+        side.HoleInstances.RemoveAt(0);
+        Destroy(oldHole);
 
-        holeInstances.RemoveAt(0);
-        GameObject newMainHole = holeInstances[0];
-        newMainHole.transform.position = oldMainHole.transform.position;
-        newMainHole.SetActive(true);
-        mainHole = newMainHole;
+        GameObject newMain = side.HoleInstances[0];
+        newMain.transform.position = oldHole.transform.position;
+        newMain.SetActive(true);
+        currentHole = newMain;
 
-        Vector3 pos = newMainHole.transform.position;
-        for (int i = 1; i < holeInstances.Count; i++)
+        Vector3 pos = newMain.transform.position;
+        for (int i = 1; i < side.HoleInstances.Count; i++)
         {
-            pos.z -= spacingZ;
-            holeInstances[i].transform.position = pos;
+            pos.z -= config.SpacingZ;
+            side.HoleInstances[i].transform.position = pos;
         }
 
-        // Reset lại số chỗ trống cho hole mới
-        if (mainHole == mainHoleLeft)
-            holeBlankLeft = 16;
-        else if (mainHole == mainHoleRight)
-            holeBlankRight = 16;
+        side.HoleBlank = 16; // Reset capacity for new hole
     }
-
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using static EventDefine;
 
-public class GameMechanicManager : Singleton<GameMechanicManager>, ICtrl
+public class GameMechanicManager : Singleton<GameMechanicManager>
 {
     [SerializeField] private List<GroupOfPeople> groupedPeopleInGame = new();
     [SerializeField] private List<GroupOfPeople> groupedPeopleFinishGame = new();
@@ -21,37 +21,10 @@ public class GameMechanicManager : Singleton<GameMechanicManager>, ICtrl
         get => groupedPeopleFinishGame;
         set => groupedPeopleFinishGame = value ?? new List<GroupOfPeople>();
     }
-
     
-    private void Awake()
-    {
-        LoadComponents();
-    }
-
-    private void Start()
-    {
-        Init();
-    }
-
-    private void Reset()
-    {
-        LoadComponents();
-        ResetValue();
-    }
-
-    public void LoadComponents()
+    protected override void LoadComponents()
     {
         LoadAllGroupedPeople();
-    }
-
-    public void ResetValue()
-    {
-        // Reset values here if needed
-    }
-
-    public void Init()
-    {
-        // Init game logic here if needed
     }
 
     private void LoadAllGroupedPeople()
@@ -104,8 +77,6 @@ public class GameMechanicManager : Singleton<GameMechanicManager>, ICtrl
         }
     }
 
-    
-
     private void OnEnable()
     {
         EventDispatcher.Add<OnPeopleRun>(OnPeopleRun);
@@ -135,11 +106,16 @@ public class GameMechanicManager : Singleton<GameMechanicManager>, ICtrl
         // 1. MainHole cùng tag thì +4 mỗi cái
         if (FinishHoleManager.Instance.MainHoleLeft != null &&
             FinishHoleManager.Instance.MainHoleLeft.tag == peopleRunEvent.tag)
-            numberGroup += FinishHoleManager.Instance.HoleBlankLeft/4;
+        {
+            numberGroup += FinishHoleManager.Instance.LeftHoleSide.HoleBlank / 4;
+        }
 
         if (FinishHoleManager.Instance.MainHoleRight != null &&
             FinishHoleManager.Instance.MainHoleRight.tag == peopleRunEvent.tag)
-            numberGroup += FinishHoleManager.Instance.HoleBlankRight / 4;
+        {
+            numberGroup += FinishHoleManager.Instance.RightHoleSide.HoleBlank / 4;
+        }
+
 
         // 2. Contain logic
 
@@ -170,16 +146,16 @@ public class GameMechanicManager : Singleton<GameMechanicManager>, ICtrl
         if (param is not OnEntryHoleTouch entryHoleTouchEvent) return;
         if (!Enum.TryParse(entryHoleTouchEvent.tag, true, out Tag tagHole)) return;
 
-        List<GameObject> people = entryHoleTouchEvent.people;
+        List<GameObject> listParentPeople = entryHoleTouchEvent.groupParentPeople;
 
         HashSet<Transform> uniqueParents = new();
-        List<GameObject> parentsToChange = new();
+        List<GameObject> parentsToFinishGame = new();
 
-        foreach (GameObject item in people)
+        foreach (GameObject parentPeople in listParentPeople)
         {
-            if (item == null) continue;
+            if (parentPeople == null) continue;
 
-            Transform parentTransform = item.transform.parent;
+            Transform parentTransform = parentPeople.transform.parent;
             if (parentTransform == null || !uniqueParents.Add(parentTransform))
                 continue; // Skip nếu null hoặc đã xử lý
 
@@ -187,7 +163,7 @@ public class GameMechanicManager : Singleton<GameMechanicManager>, ICtrl
             PeopleMovement[] childrenMovements = parentTransform.GetComponentsInChildren<PeopleMovement>();
 
             bool allMoved = true;
-            foreach (var movement in childrenMovements)
+            foreach (PeopleMovement movement in childrenMovements)
             {
                 if (movement == null || !movement.Moved)
                 {
@@ -198,20 +174,20 @@ public class GameMechanicManager : Singleton<GameMechanicManager>, ICtrl
 
             if (allMoved)
             {
-                parentsToChange.Add(parentTransform.gameObject);
+                parentsToFinishGame.Add(parentTransform.gameObject);
             }
         }
 
-        if (parentsToChange.Count > 0)
+        if (parentsToFinishGame.Count > 0)
         {
-            foreach (var parentObj in parentsToChange)
+            foreach (var parentObj in parentsToFinishGame)
             {
-                ChangeIntoFinishGame(parentObj);
+                BringIntoFinishGame(parentObj);
             }
         }
     }
 
-    public void ChangeIntoFinishGame(GameObject parentObj)
+    public void BringIntoFinishGame(GameObject parentObj)
     {
         if (parentObj == null) return;
 

@@ -4174,6 +4174,70 @@ PrefabInstance:
       propertyPath: m_Name
       value: FinishHoleManager
       objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: leftHoleSide.HoleBlank
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: leftHoleConfig.SpacingZ
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: rightHoleSide.HoleBlank
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: rightHoleConfig.SpacingZ
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: leftHoleConfig.StartPosition.z
+      value: -35
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: rightHoleConfig.StartPosition.x
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: rightHoleConfig.StartPosition.z
+      value: -35
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: leftHoleSide.HolePrefabs.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: rightHoleSide.HolePrefabs.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'leftHoleSide.HolePrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 6607117609937501849, guid: afa57479813dde64dbe1d720efaae8c0, type: 3}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'leftHoleSide.HolePrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1370171572350118894, guid: 5636689eb5900a04eb01d5e0b8e5ab1b, type: 3}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'leftHoleSide.HolePrefabs.Array.data[2]'
+      value: 
+      objectReference: {fileID: 6607117609937501849, guid: afa57479813dde64dbe1d720efaae8c0, type: 3}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'leftHoleSide.HolePrefabs.Array.data[3]'
+      value: 
+      objectReference: {fileID: 6607117609937501849, guid: afa57479813dde64dbe1d720efaae8c0, type: 3}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'rightHoleSide.HolePrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 6607117609937501849, guid: afa57479813dde64dbe1d720efaae8c0, type: 3}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'rightHoleSide.HolePrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1370171572350118894, guid: 5636689eb5900a04eb01d5e0b8e5ab1b, type: 3}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'rightHoleSide.HolePrefabs.Array.data[2]'
+      value: 
+      objectReference: {fileID: 6607117609937501849, guid: afa57479813dde64dbe1d720efaae8c0, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

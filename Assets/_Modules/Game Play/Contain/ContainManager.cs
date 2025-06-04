@@ -3,44 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ContainManager : Singleton<ContainManager>, ICtrl
+public class ContainManager : Singleton<ContainManager>
 {
     [SerializeField] private ContainArrangement[] containArrangements;
     [SerializeField] private ContainEndGame containEndGame;
     public ContainArrangement[] ContainArrangements { get => containArrangements; set => containArrangements = value; }
     public ContainEndGame ContainEndGame { get => containEndGame; set => containEndGame = value; }
 
-    private void Awake()
-    {
-        LoadComponents();
-    }
-
-    private void Start()
-    {
-        Init();
-    }
-
-    private void Reset()
-    {
-        LoadComponents();
-        ResetValue();
-    }
-
-    public void LoadComponents()
+    protected override void LoadComponents()
     {
         // Your implementation
         LoadContainArrangement();
         LoadContainEndGame();
-    }
-
-    public void ResetValue()
-    {
-        // Your implementation
-    }
-
-    public void Init()
-    {
-        // Your implementation
     }
 
     void LoadContainArrangement()

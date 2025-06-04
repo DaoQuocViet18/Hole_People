@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(ContainManager))]
-public class PeopleHoleToContainCtrl : Singleton<PeopleHoleToContainCtrl>, ICtrl
+public class PeopleHoleToContainCtrl : Singleton<PeopleHoleToContainCtrl>
 {
     [SerializeField] private ContainManager peopleHoleToContainManager;
     [SerializeField] private EntryHoleTouch[] hole;
@@ -14,39 +14,13 @@ public class PeopleHoleToContainCtrl : Singleton<PeopleHoleToContainCtrl>, ICtrl
     public ContainArrangement[] ContainArrangements { get => containArrangements; set => containArrangements = value; }
     public ContainEndGame ContainEndGame { get => containEndGame; set => containEndGame = value; }
 
-    private void Awake()
-    {
-        LoadComponents();
-    }
-
-    private void Start()
-    {
-        Init();
-    }
-
-    private void Reset()
-    {
-        LoadComponents();
-        ResetValue();
-    }
-
-    public void LoadComponents()
+    protected override void LoadComponents()
     {
         // Your implementation
         LoadPeopleHoleToContain();
         LoadHoleTouch();
         LoadContainArrangement();
         LoadContainEndGame();
-    }
-
-    public void ResetValue()
-    {
-        // Your implementation
-    }
-
-    public void Init()
-    {
-        // Your implementation
     }
 
     void LoadHoleTouch() 

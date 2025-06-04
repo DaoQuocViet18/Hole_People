@@ -31,7 +31,7 @@ public class AudioManager : Singleton<AudioManager>
         }
     }
 
-    private void Awake()
+    protected override void Awake()
     {
         musicSource = gameObject.AddComponent<AudioSource>();
         musicSource.playOnAwake = false;

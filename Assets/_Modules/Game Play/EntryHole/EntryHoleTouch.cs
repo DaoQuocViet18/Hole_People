@@ -53,7 +53,7 @@ public class EntryHoleTouch : MonoBehaviour
                 EventDispatcher.Dispatch(new EventDefine.OnEntryHoleTouch
                 {
                     tag = dispatchedObjects[0].tag,
-                    people = dispatchedObjects
+                    groupParentPeople = dispatchedObjects
                 });
             }
         }

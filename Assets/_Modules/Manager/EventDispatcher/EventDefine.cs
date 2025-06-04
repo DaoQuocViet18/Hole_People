@@ -19,6 +19,6 @@ public partial class EventDefine : IEventParam
     public struct OnEntryHoleTouch : IEventParam
     {
         public string tag;
-        public List<GameObject> people;
+        public List<GameObject> groupParentPeople;
     }
 }
