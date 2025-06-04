@@ -28,7 +28,7 @@ public class InputManager : Singleton<InputManager>
 
     private IEnumerator HandleClickHole(GameObject holeObject, string groupTag)
     {
-        Debug.Log("groupTag: " + groupTag);
+        //Debug.Log("groupTag: " + groupTag);
 
         // Gửi sự kiện click hole
         EventDispatcher.Dispatch(new EventDefine.OnNodeRun { tag = groupTag });

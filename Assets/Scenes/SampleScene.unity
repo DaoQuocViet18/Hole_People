@@ -2666,6 +2666,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55c2b133fb5f12345a298e5e768c462f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1470623427 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6748409497093941611, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+  m_PrefabInstance: {fileID: 3296548890689439285}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acecb1f120d9ed6469421313a6635e3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1492742941
 GameObject:
   m_ObjectHideFlags: 0
@@ -3886,8 +3897,32 @@ PrefabInstance:
       value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: leftFHSpawnInfo.SpacingZ
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
       propertyPath: rightHoleConfig.SpacingZ
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: rightFHSpawnInfo.SpacingZ
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: leftFHInfo.holeBlankGroups
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: leftFHInfo.holeBlankPeople
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: rightFHInfo.holeBlankGroups
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: rightFHInfo.holeBlankPeople
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
       propertyPath: leftFHSConfig.StartPosition.z
@@ -3906,6 +3941,10 @@ PrefabInstance:
       value: -35
       objectReference: {fileID: 0}
     - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: leftFHSpawnInfo.StartPosition.z
+      value: -35
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
       propertyPath: rightHoleConfig.StartPosition.x
       value: -10
       objectReference: {fileID: 0}
@@ -3914,13 +3953,77 @@ PrefabInstance:
       value: -35
       objectReference: {fileID: 0}
     - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: rightFHSpawnInfo.StartPosition.x
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: rightFHSpawnInfo.StartPosition.z
+      value: -35
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: leftFHInfo.HolePrefabs.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: leftFHInfo.holePrefabs.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: rightFHInfo.HolePrefabs.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: rightFHInfo.holePrefabs.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
       propertyPath: leftHoleSide.HolePrefabs.Array.size
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'leftFHInfo.HolePrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 6607117609937501849, guid: afa57479813dde64dbe1d720efaae8c0, type: 3}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'leftFHInfo.HolePrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1370171572350118894, guid: 5636689eb5900a04eb01d5e0b8e5ab1b, type: 3}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'leftFHInfo.holePrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1370171572350118894, guid: 5636689eb5900a04eb01d5e0b8e5ab1b, type: 3}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'leftFHInfo.holePrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 6607117609937501849, guid: afa57479813dde64dbe1d720efaae8c0, type: 3}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'leftFHInfo.holePrefabs.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2431653242673561801, guid: c7119ca9428aff241a8e0507e492e93c, type: 3}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
       propertyPath: rightHoleSide.HolePrefabs.Array.size
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'rightFHInfo.HolePrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 6607117609937501849, guid: afa57479813dde64dbe1d720efaae8c0, type: 3}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'rightFHInfo.HolePrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2431653242673561801, guid: c7119ca9428aff241a8e0507e492e93c, type: 3}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'rightFHInfo.HolePrefabs.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1370171572350118894, guid: 5636689eb5900a04eb01d5e0b8e5ab1b, type: 3}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'rightFHInfo.holePrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 6607117609937501849, guid: afa57479813dde64dbe1d720efaae8c0, type: 3}
+    - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'rightFHInfo.holePrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2431653242673561801, guid: c7119ca9428aff241a8e0507e492e93c, type: 3}
     - target: {fileID: 5238650078432063997, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
       propertyPath: 'leftHoleSide.HolePrefabs.Array.data[0]'
       value: 
@@ -4073,89 +4176,113 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: groupedPeopleCtrl
+      value: 
+      objectReference: {fileID: 1470623427}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: groupedPeopleInGame.Array.data[0].tag
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: groupedPeopleInGame.Array.data[1].tag
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: groupedPeopleInGame.Array.data[0].groupPeople.Array.size
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: groupedPeopleInGame.Array.data[1].groupPeople.Array.size
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
       propertyPath: 'groupedPeopleInGame.Array.data[0].groupPeople.Array.data[0]'
-      value: 
-      objectReference: {fileID: 1833338860}
-    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
-      propertyPath: 'groupedPeopleInGame.Array.data[0].groupPeople.Array.data[1]'
-      value: 
-      objectReference: {fileID: 1872795184}
-    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
-      propertyPath: 'groupedPeopleInGame.Array.data[0].groupPeople.Array.data[2]'
-      value: 
-      objectReference: {fileID: 2133656910}
-    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
-      propertyPath: 'groupedPeopleInGame.Array.data[0].groupPeople.Array.data[3]'
-      value: 
-      objectReference: {fileID: 902404510}
-    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
-      propertyPath: 'groupedPeopleInGame.Array.data[0].groupPeople.Array.data[4]'
-      value: 
-      objectReference: {fileID: 150470647}
-    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
-      propertyPath: 'groupedPeopleInGame.Array.data[0].groupPeople.Array.data[5]'
-      value: 
-      objectReference: {fileID: 997068391}
-    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
-      propertyPath: 'groupedPeopleInGame.Array.data[0].groupPeople.Array.data[6]'
-      value: 
-      objectReference: {fileID: 196484344}
-    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
-      propertyPath: 'groupedPeopleInGame.Array.data[0].groupPeople.Array.data[7]'
-      value: 
-      objectReference: {fileID: 328372711}
-    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
-      propertyPath: 'groupedPeopleInGame.Array.data[0].groupPeople.Array.data[8]'
-      value: 
-      objectReference: {fileID: 1681611617}
-    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
-      propertyPath: 'groupedPeopleInGame.Array.data[0].groupPeople.Array.data[9]'
-      value: 
-      objectReference: {fileID: 1609549494}
-    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
-      propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[0]'
-      value: 
-      objectReference: {fileID: 1251510633}
-    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
-      propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[1]'
-      value: 
-      objectReference: {fileID: 298643789}
-    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
-      propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[2]'
-      value: 
-      objectReference: {fileID: 754797933}
-    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
-      propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[3]'
-      value: 
-      objectReference: {fileID: 1034481774}
-    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
-      propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[4]'
-      value: 
-      objectReference: {fileID: 633585716}
-    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
-      propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[5]'
-      value: 
-      objectReference: {fileID: 240528247}
-    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
-      propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[6]'
-      value: 
-      objectReference: {fileID: 822789976}
-    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
-      propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[7]'
-      value: 
-      objectReference: {fileID: 11891198}
-    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
-      propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[8]'
       value: 
       objectReference: {fileID: 1886653142}
     - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
-      propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[9]'
+      propertyPath: 'groupedPeopleInGame.Array.data[0].groupPeople.Array.data[1]'
       value: 
       objectReference: {fileID: 871022417}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: 'groupedPeopleInGame.Array.data[0].groupPeople.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1251510633}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: 'groupedPeopleInGame.Array.data[0].groupPeople.Array.data[3]'
+      value: 
+      objectReference: {fileID: 419008661}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: 'groupedPeopleInGame.Array.data[0].groupPeople.Array.data[4]'
+      value: 
+      objectReference: {fileID: 633585716}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: 'groupedPeopleInGame.Array.data[0].groupPeople.Array.data[5]'
+      value: 
+      objectReference: {fileID: 822789976}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: 'groupedPeopleInGame.Array.data[0].groupPeople.Array.data[6]'
+      value: 
+      objectReference: {fileID: 240528247}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: 'groupedPeopleInGame.Array.data[0].groupPeople.Array.data[7]'
+      value: 
+      objectReference: {fileID: 298643789}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: 'groupedPeopleInGame.Array.data[0].groupPeople.Array.data[8]'
+      value: 
+      objectReference: {fileID: 754797933}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: 'groupedPeopleInGame.Array.data[0].groupPeople.Array.data[9]'
+      value: 
+      objectReference: {fileID: 11891198}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[0]'
+      value: 
+      objectReference: {fileID: 902404510}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[1]'
+      value: 
+      objectReference: {fileID: 150470647}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1833338860}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[3]'
+      value: 
+      objectReference: {fileID: 997068391}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[4]'
+      value: 
+      objectReference: {fileID: 1872795184}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[5]'
+      value: 
+      objectReference: {fileID: 196484344}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[6]'
+      value: 
+      objectReference: {fileID: 328372711}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[7]'
+      value: 
+      objectReference: {fileID: 2133656910}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[8]'
+      value: 
+      objectReference: {fileID: 1609549494}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[9]'
+      value: 
+      objectReference: {fileID: 1681611617}
     - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
       propertyPath: 'groupedPeopleInGame.Array.data[2].groupPeople.Array.data[0]'
       value: 
       objectReference: {fileID: 214173449}
+    - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
+      propertyPath: 'groupedPeopleInGame.Array.data[0].groupPeople.Array.data[10]'
+      value: 
+      objectReference: {fileID: 1034481774}
     - target: {fileID: 4615577896037591217, guid: dbc74d0bc97fc094f9a047a188836b51, type: 3}
       propertyPath: 'groupedPeopleInGame.Array.data[1].groupPeople.Array.data[10]'
       value: 

@@ -28,24 +28,24 @@ public class FinishHoleManager : Singleton<FinishHoleManager>
     protected override void ResetValue()
     {
         // Reset values here if needed
-        leftFHInfo.HoleBlank = 16;
+        leftFHInfo.holeBlankGroups = 4;
         leftFHSpawnInfo.StartPosition = new Vector3(0, 0, -35);
         leftFHSpawnInfo.SpacingZ = 7f;
 
-        rightFHInfo.HoleBlank = 16;
+        rightFHInfo.holeBlankGroups = 4;
         rightFHSpawnInfo.StartPosition = new Vector3(-10, 0, -35);
         rightFHSpawnInfo.SpacingZ = 7f;
     }
 
     private void Start()
     {
-        leftFHInfo.HoleInstances = SpawnHoles(leftFHInfo.HolePrefabs, leftFHSpawnInfo);
-        rightFHInfo.HoleInstances = SpawnHoles(rightFHInfo.HolePrefabs, rightFHSpawnInfo);
+        leftFHInfo.holeInstances = SpawnHoles(leftFHInfo.holePrefabs, leftFHSpawnInfo);
+        rightFHInfo.holeInstances = SpawnHoles(rightFHInfo.holePrefabs, rightFHSpawnInfo);
 
-        if (leftFHInfo.HoleInstances.Count > 0)
-            mainHoleLeft = leftFHInfo.HoleInstances[0];
-        if (rightFHInfo.HoleInstances.Count > 0)
-            mainHoleRight = rightFHInfo.HoleInstances[0];
+        if (leftFHInfo.holeInstances.Count > 0)
+            mainHoleLeft = leftFHInfo.holeInstances[0];
+        if (rightFHInfo.holeInstances.Count > 0)
+            mainHoleRight = rightFHInfo.holeInstances[0];
     }
 
 
@@ -64,13 +64,18 @@ public class FinishHoleManager : Singleton<FinishHoleManager>
         return instances;
     }
 
-    public bool CheckTagFinishHole(Tag tag)
+    public Tag[] ExportTagFinishHole()
     {
-        if (mainHoleLeft != null && mainHoleLeft.tag == tag.ToString() && leftFHInfo.HoleBlank > 0)
-            return true;
-        if (mainHoleRight != null && mainHoleRight.tag == tag.ToString() && rightFHInfo.HoleBlank > 0)
-            return true;
-        return false;
+        Tag leftTag = Tag.None;
+        Tag rightTag = Tag.None;
+
+        if (mainHoleLeft != null && Enum.TryParse(mainHoleLeft.tag, out Tag parsedLeft))
+            leftTag = parsedLeft;
+
+        if (mainHoleRight != null && Enum.TryParse(mainHoleRight.tag, out Tag parsedRight))
+            rightTag = parsedRight;
+
+        return new Tag[] { leftTag, rightTag };
     }
 
     public void PutPeopleInFinishHole(GameObject parentObj)
@@ -90,23 +95,37 @@ public class FinishHoleManager : Singleton<FinishHoleManager>
         if (string.IsNullOrEmpty(tag) && people.Count > 0)
             tag = people[0].tag;
 
-        if (mainHoleLeft != null && mainHoleLeft.tag == tag && leftFHInfo.HoleBlank > 0)
-            MovePeopleToHole(mainHoleLeft, people, true);
-        else if (mainHoleRight != null && mainHoleRight.tag == tag && rightFHInfo.HoleBlank > 0)
-            MovePeopleToHole(mainHoleRight, people, false);
+        bool isLeft = mainHoleLeft != null && mainHoleLeft.tag == tag && leftFHInfo.holeBlankGroups > 0;
+        bool isRight = mainHoleRight != null && mainHoleRight.tag == tag && rightFHInfo.holeBlankGroups > 0;
+
+        if (isLeft)
+        {
+            MovePeopleToHole(mainHoleLeft, people);
+            leftFHInfo.holeBlankGroups--;
+
+            if (leftFHInfo.holeBlankGroups <= 0)
+                ChangeMainHole(ref mainHoleLeft, leftFHInfo, leftFHSpawnInfo, true);
+        }
+        else if (isRight)
+        {
+            MovePeopleToHole(mainHoleRight, people);
+            rightFHInfo.holeBlankGroups--;
+
+            if (rightFHInfo.holeBlankGroups <= 0)
+                ChangeMainHole(ref mainHoleRight, rightFHInfo, rightFHSpawnInfo, false);
+        }
         else
+        {
             Debug.LogWarning($"No suitable finish hole available for tag '{tag}'");
+        }
     }
 
-    private void MovePeopleToHole(GameObject mainHole, List<GameObject> people, bool isLeft)
-    {
-        FinishHoleInfo side = isLeft ? leftFHInfo : rightFHInfo;
-        int moveCount = Mathf.Min(side.HoleBlank, people.Count);
-        List<GameObject> selected = people.GetRange(0, moveCount);
 
+    private void MovePeopleToHole(GameObject mainHole, List<GameObject> people)
+    {
         Vector3 holePos = mainHole.transform.position;
 
-        foreach (GameObject person in selected)
+        foreach (GameObject person in people)
         {
             person.transform.position = holePos + Vector3.up * 4;
             if (person.TryGetComponent(out PeopleMovement move))
@@ -114,41 +133,45 @@ public class FinishHoleManager : Singleton<FinishHoleManager>
             else
                 Debug.LogWarning($"{person.name} missing PeopleMovement.");
         }
-
-        side.HoleBlank -= moveCount;
-        people.RemoveRange(0, moveCount);
-
-        if (side.HoleBlank <= 0)
-        {
-            ChangeMainHole(ref mainHole, side, isLeft ? leftFHSpawnInfo : rightFHSpawnInfo);
-        }
     }
 
-    private void ChangeMainHole(ref GameObject currentHole, FinishHoleInfo side, FinishHoleSpawnInfo config)
+
+    private void ChangeMainHole(ref GameObject currentHole, FinishHoleInfo side, FinishHoleSpawnInfo config, bool isLeft)
     {
-        if (side.HoleInstances.Count <= 1)
+        if (side.holeInstances.Count <= 1)
         {
             Debug.LogWarning("No more holes to replace.");
+            currentHole.SetActive(false);
             return;
         }
 
         GameObject oldHole = currentHole;
         oldHole.SetActive(false);
-        side.HoleInstances.RemoveAt(0);
-        Destroy(oldHole);
+        side.holeInstances.RemoveAt(0);
 
-        GameObject newMain = side.HoleInstances[0];
+        GameObject newMain = side.holeInstances[0];
         newMain.transform.position = oldHole.transform.position;
         newMain.SetActive(true);
         currentHole = newMain;
 
+        // Update mainHoleLeft hoặc mainHoleRight trực tiếp trong class
+        if (isLeft)
+            mainHoleLeft = newMain;
+        else
+            mainHoleRight = newMain;
+
         Vector3 pos = newMain.transform.position;
-        for (int i = 1; i < side.HoleInstances.Count; i++)
+        for (int i = 1; i < side.holeInstances.Count; i++)
         {
             pos.z -= config.SpacingZ;
-            side.HoleInstances[i].transform.position = pos;
+            side.holeInstances[i].transform.position = pos;
         }
 
-        side.HoleBlank = 16; // Reset capacity for new hole
+        Destroy(oldHole);
+
+        side.holeBlankGroups = 4; // Reset capacity for new hole
+
+        //EventDispatcher.Dispatch(new EventDefine.OnChangeMainHole());
     }
+
 }

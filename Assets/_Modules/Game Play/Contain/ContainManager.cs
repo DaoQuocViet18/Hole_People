@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ContainManager : Singleton<ContainManager>
@@ -35,32 +36,17 @@ public class ContainManager : Singleton<ContainManager>
         }
     }
 
-    public bool CheckTagContain(Tag tag)
+    public Tag[] ExportTagContain()
     {
-        foreach (var contain in containArrangements)
-        {
-            if (contain.TagContain == tag || contain.TagContain == Tag.None)
-                return true;
-        }
-        return false;
+        return containArrangements
+            .Select(c => c.TagContain)
+            .Concat(Enumerable.Repeat(Tag.None, 4)) // Đảm bảo đủ 4 phần tử
+            .Take(4)
+            .ToArray();
     }
 
     public void PutPeopleInContain(Tag tagPeople, GameObject parentObj)
     {
-        if (parentObj == null) return;
-
-        List<GameObject> listObj = new();
-
-        PeopleMovement[] peopleMovements = parentObj.GetComponentsInChildren<PeopleMovement>(true);
-
-        foreach (var movement in peopleMovements)
-        {
-            if (movement != null)
-                listObj.Add(movement.gameObject);
-        }
-
-        if (listObj.Count == 0) return;
-
         // Ưu tiên chứa đúng tag
         ContainArrangement targetContain = containArrangements.FirstOrDefault(c => c.TagContain == tagPeople);
         // Nếu không có, chọn container chưa gán tag
@@ -71,12 +57,12 @@ public class ContainManager : Singleton<ContainManager>
         if (targetContain != null)
         {
             targetContain.TagContain = tagPeople;
-            targetContain.People.AddRange(listObj);
+            targetContain.GroupPeople.Add(parentObj);
             targetContain.Arrangement();
         }
         else if (containEndGame != null)
         {
-            containEndGame.People.AddRange(listObj);
+            containEndGame.GroupPeople.Add(parentObj);
             containEndGame.Arrangement();
         }
         else

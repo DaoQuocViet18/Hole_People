@@ -21,4 +21,6 @@ public partial class EventDefine : IEventParam
         public string tag;
         public List<GameObject> groupParentPeople;
     }
+
+    public struct OnChangeMainHole : IEventParam { }
 }
