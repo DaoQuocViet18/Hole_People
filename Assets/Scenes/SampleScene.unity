@@ -4041,6 +4041,66 @@ PrefabInstance:
       propertyPath: 'rightHoleSide.HolePrefabs.Array.data[2]'
       value: 
       objectReference: {fileID: 6607117609937501849, guid: afa57479813dde64dbe1d720efaae8c0, type: 3}
+    - target: {fileID: 6196026772363377600, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: leftFHSpawnInfo.SpacingZ
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6196026772363377600, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: rightFHSpawnInfo.SpacingZ
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6196026772363377600, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: leftFHInfo.holeBlankGroups
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6196026772363377600, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: rightFHInfo.holeBlankGroups
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6196026772363377600, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: leftFHSpawnInfo.StartPosition.z
+      value: -35
+      objectReference: {fileID: 0}
+    - target: {fileID: 6196026772363377600, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: rightFHSpawnInfo.StartPosition.x
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6196026772363377600, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: rightFHSpawnInfo.StartPosition.z
+      value: -35
+      objectReference: {fileID: 0}
+    - target: {fileID: 6196026772363377600, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: leftFHInfo.holePrefabs.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6196026772363377600, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: rightFHInfo.holePrefabs.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6196026772363377600, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'leftFHInfo.holePrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 6607117609937501849, guid: afa57479813dde64dbe1d720efaae8c0, type: 3}
+    - target: {fileID: 6196026772363377600, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'leftFHInfo.holePrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2431653242673561801, guid: c7119ca9428aff241a8e0507e492e93c, type: 3}
+    - target: {fileID: 6196026772363377600, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'leftFHInfo.holePrefabs.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1370171572350118894, guid: 5636689eb5900a04eb01d5e0b8e5ab1b, type: 3}
+    - target: {fileID: 6196026772363377600, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'rightFHInfo.holePrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1370171572350118894, guid: 5636689eb5900a04eb01d5e0b8e5ab1b, type: 3}
+    - target: {fileID: 6196026772363377600, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'rightFHInfo.holePrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 6607117609937501849, guid: afa57479813dde64dbe1d720efaae8c0, type: 3}
+    - target: {fileID: 6196026772363377600, guid: f6b8ba648940eb748bd7db27089499c5, type: 3}
+      propertyPath: 'rightFHInfo.holePrefabs.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2431653242673561801, guid: c7119ca9428aff241a8e0507e492e93c, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

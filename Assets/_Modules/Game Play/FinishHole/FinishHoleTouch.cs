@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FinishHoleTouch : MonoBehaviour
 {
-    [SerializeField] private int expectedPeopleCount = 16;
+    [SerializeField] private int expectedPeopleCount = 4;
     private readonly List<PeopleMovement> peopleInHole = new List<PeopleMovement>();
 
     public event Action<GameObject> OnFulledFinishHole;
