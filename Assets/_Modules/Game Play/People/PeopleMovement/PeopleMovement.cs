@@ -8,13 +8,12 @@ public class PeopleMovement : CtrlMonoBehaviour
     [Header("Movement Settings")]
     [SerializeField] private PeopleMovementInfo movementInfo;
 
-    [SerializeField] private bool isFalling = false; // để ngăn di chuyển tiếp khi rơi vào hole
-    private Vector3 target;
+    [SerializeField] private bool isFalling = false;
     [SerializeField] private bool moved = false;
 
-    public bool Moved => moved;
+    private Vector3 target;
 
-    // Optional accessors
+    public bool Moved => moved;
     public float MoveSpeed => movementInfo.MoveSpeed;
     public float SlowDownFactor => movementInfo.MovementSlowDownFactor;
     public float RotationSpeed => movementInfo.RotationSpeed;
@@ -31,7 +30,7 @@ public class PeopleMovement : CtrlMonoBehaviour
     {
         if (movingNodes == null || movingNodes.Count == 0) return;
 
-        target = movingNodes[^1].transform.position;
+        target = movingNodes[^1].Position;
         StartCoroutine(MoveThroughNodes(movingNodes));
     }
 
@@ -42,67 +41,52 @@ public class PeopleMovement : CtrlMonoBehaviour
         Vector3 targetPosition = movingObj.transform.position;
         targetPosition.y = transform.position.y;
 
-        Vector3 direction = (targetPosition - transform.position).normalized;
-        if (direction != Vector3.zero)
-        {
-            Quaternion lookRotation = Quaternion.LookRotation(direction);
-            transform.DORotateQuaternion(lookRotation, 1f / RotationSpeed);
-        }
-
-        float distance = Vector3.Distance(transform.position, targetPosition);
-        float duration = (distance / MoveSpeed) * SlowDownFactor;
-
-        transform.DOMove(targetPosition, duration).SetEase(Ease.Linear);
+        RotateTo(targetPosition);
+        MoveTo(targetPosition);
     }
 
-    public void MovementInstant(GameObject movingObj)
+    private IEnumerator MoveThroughNodes(List<Node> nodes)
     {
-        transform.position = movingObj.transform.position + Vector3.up * 2;
+        if (nodes == null || nodes.Count == 0) yield break;
 
-        transform.DOMoveY(movingObj.transform.position.y - 2f, 0.2f)
-                 .SetEase(Ease.InQuad)
-                 .OnComplete(() =>
-                 {
-                     moved = true;
-                 });
-    }
+        transform.position = new Vector3(nodes[0].Position.x, transform.position.y, nodes[0].Position.z);
 
-    private IEnumerator MoveThroughNodes(List<Node> movingNodes)
-    {
-        if (movingNodes == null || movingNodes.Count == 0)
-            yield break;
-
-        Vector3 startPosition = transform.position;
-        Vector3 initialPosition = movingNodes[0].Position;
-        initialPosition.y = transform.position.y;
-        transform.position = initialPosition;
-
-        for (int i = 1; i < movingNodes.Count; i++)
+        for (int i = 1; i < nodes.Count; i++)
         {
             if (isFalling) yield break;
 
-            Vector3 targetPosition = movingNodes[i].Position;
-            targetPosition.y = transform.position.y;
+            Vector3 targetPos = new Vector3(nodes[i].Position.x, transform.position.y, nodes[i].Position.z);
+            if (Vector3.Distance(transform.position, targetPos) < 0.01f) continue;
 
-            if (Mathf.Approximately(targetPosition.x, startPosition.x) &&
-                Mathf.Approximately(targetPosition.z, startPosition.z))
-                continue;
-
-            Vector3 direction = (targetPosition - transform.position).normalized;
-            if (direction != Vector3.zero)
-            {
-                Quaternion lookRotation = Quaternion.LookRotation(direction);
-                transform.DORotateQuaternion(lookRotation, 1f / RotationSpeed);
-            }
-
-            float distance = Vector3.Distance(transform.position, targetPosition);
-            float duration = (distance / MoveSpeed) * SlowDownFactor;
-
-            Tween moveTween = transform.DOMove(targetPosition, duration).SetEase(Ease.Linear);
-            yield return moveTween.WaitForCompletion();
-
-            startPosition = targetPosition;
+            RotateTo(targetPos);
+            yield return MoveToCoroutine(targetPos);
         }
+    }
+
+    private void RotateTo(Vector3 targetPos)
+    {
+        Vector3 direction = (targetPos - transform.position).normalized;
+        if (direction == Vector3.zero) return;
+
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+        transform.DORotateQuaternion(lookRotation, 1f / RotationSpeed);
+    }
+
+    private void MoveTo(Vector3 targetPos)
+    {
+        float distance = Vector3.Distance(transform.position, targetPos);
+        float duration = (distance / MoveSpeed) * SlowDownFactor;
+
+        transform.DOMove(targetPos, duration).SetEase(Ease.Linear);
+    }
+
+    private IEnumerator MoveToCoroutine(Vector3 targetPos)
+    {
+        float distance = Vector3.Distance(transform.position, targetPos);
+        float duration = (distance / MoveSpeed) * SlowDownFactor;
+
+        Tween moveTween = transform.DOMove(targetPos, duration).SetEase(Ease.Linear);
+        yield return moveTween.WaitForCompletion();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -110,7 +94,6 @@ public class PeopleMovement : CtrlMonoBehaviour
         if (isFalling) return;
 
         GameObject other = collision.gameObject;
-
         if (other.layer == LayerMask.NameToLayer("Hole") && other.CompareTag(gameObject.tag))
         {
             isFalling = true;
@@ -120,31 +103,33 @@ public class PeopleMovement : CtrlMonoBehaviour
 
     private void JumpIntoHole(Vector3 holePosition)
     {
-        Vector3 startPos = transform.position;
-        Vector3 jumpTarget = holePosition;
-        jumpTarget.y = startPos.y;
+        Vector3 jumpTarget = new Vector3(holePosition.x, transform.position.y, holePosition.z);
 
-        float jumpPower = 2.5f;
-        float jumpDuration = 0.6f;
-
-        transform.DOJump(jumpTarget, jumpPower, 1, jumpDuration)
-                 .SetEase(Ease.OutQuad)
-                 .OnComplete(() =>
-                 {
-                     transform.DOMoveY(holePosition.y - 2f, 0.2f)
-                              .SetEase(Ease.InQuad)
-                              .OnComplete(() =>
-                              {
-                                  moved = true;
-                              });
-                 });
+        transform.DOJump(jumpTarget, 2.5f, 1, 0.6f)
+            .SetEase(Ease.OutQuad)
+            .OnComplete(() =>
+            {
+                transform.DOMoveY(holePosition.y - 2f, 0.2f)
+                    .SetEase(Ease.InQuad)
+                    .OnComplete(() => moved = true);
+            });
     }
 
     public void FallIntoHole(Vector3 holePosition)
     {
+        float radius = 1f;
         float targetY = holePosition.y - 2f;
 
-        transform.DOMoveY(targetY, 0.2f)
-                 .SetEase(Ease.InQuad);
+        Vector3 offset = new Vector3(
+            Random.Range(-radius, radius),
+            0f,
+            Random.Range(-radius, radius)
+        );
+
+        Vector3 targetPos = new Vector3(holePosition.x, targetY, holePosition.z) + offset;
+
+        transform.DOMove(targetPos, 0.2f)
+            .SetEase(Ease.InQuad)
+            .OnComplete(() => Destroy(gameObject));
     }
 }

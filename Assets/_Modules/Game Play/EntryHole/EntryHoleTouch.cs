@@ -5,22 +5,20 @@ using UnityEngine;
 public class EntryHoleTouch : MonoBehaviour
 {
     [SerializeField] private List<PeopleMovement> peopleInHole = new();
-    [SerializeField] private bool _shouldCheckMovedPeople = false;
-
-    public event Action<Tag, List<GameObject>> OnAllPeopleEntered;
+    [SerializeField] private bool shouldCheckMovedPeople = false;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent(out PeopleMovement movement) && !peopleInHole.Contains(movement))
         {
             peopleInHole.Add(movement);
-            _shouldCheckMovedPeople = true; // Đánh dấu cần kiểm tra
+            shouldCheckMovedPeople = true; // Đánh dấu cần kiểm tra
         }
     }
 
     private void Update()
     {
-        if (!_shouldCheckMovedPeople || peopleInHole.Count == 0)
+        if (!shouldCheckMovedPeople || peopleInHole.Count == 0)
             return;
 
         List<PeopleMovement> readyToDispatch = new();
@@ -48,8 +46,6 @@ public class EntryHoleTouch : MonoBehaviour
                 Tag incomingTag = Tag.None;
                 Enum.TryParse(dispatchedObjects[0].tag, true, out incomingTag);
 
-                OnAllPeopleEntered?.Invoke(incomingTag, dispatchedObjects);
-
                 EventDispatcher.Dispatch(new EventDefine.OnEntryHoleTouch
                 {
                     tag = dispatchedObjects[0].tag,
@@ -59,7 +55,7 @@ public class EntryHoleTouch : MonoBehaviour
         }
 
         // ✅ LUÔN duy trì kiểm tra nếu vẫn còn người
-        _shouldCheckMovedPeople = peopleInHole.Count > 0;
+        shouldCheckMovedPeople = peopleInHole.Count > 0;
     }
 
 }

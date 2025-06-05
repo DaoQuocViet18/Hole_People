@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using static EventDefine;
 
-public class Node : MonoBehaviour
+public class Node : CtrlMonoBehaviour
 {
     [Header("Node Information")]
 
@@ -36,8 +36,9 @@ public class Node : MonoBehaviour
         EventDispatcher.Remove<OnNodeRun>(OnNodeRun);
     }
 
-    private void Start()
+    protected override void LoadComponents()
     {
+        base.LoadComponents();
         SetUp();
     }
 

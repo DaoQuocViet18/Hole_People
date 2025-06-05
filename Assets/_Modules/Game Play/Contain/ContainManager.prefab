@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5641176917809859832}
   - component: {fileID: 7863929246920173829}
   m_Layer: 0
-  m_Name: Contains
+  m_Name: ContainManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -341,7 +341,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4590115179534815014, guid: 5e08949e93346334d90646093608baf4, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.4
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4590115179534815014, guid: 5e08949e93346334d90646093608baf4, type: 3}
       propertyPath: m_LocalPosition.x

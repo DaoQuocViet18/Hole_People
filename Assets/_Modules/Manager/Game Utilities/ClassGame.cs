@@ -13,6 +13,12 @@ public class GroupOfPeople
     public List<GameObject> groupPeople = new List<GameObject>();
 }
 
+public class StatusBlank
+{
+    public Tag tag;
+    public int blank = new int();
+}
+
 [System.Serializable]
 public class FinishHoleInfo
 {

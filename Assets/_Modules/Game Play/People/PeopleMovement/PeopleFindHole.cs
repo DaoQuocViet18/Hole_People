@@ -23,6 +23,8 @@ public class PeopleFindHole : MonoBehaviour
     private List<Node> movingNodes = new List<Node>();
     [SerializeField] private bool isMoving = false;
 
+    public bool IsMoving { get => isMoving; set => isMoving = value; }
+
     private void Awake()
     {
         LoadComponents();
@@ -42,7 +44,7 @@ public class PeopleFindHole : MonoBehaviour
 
     public List<Node> FindHole(Node targetNode)
     {
-        if (isMoving) return null;
+        if (IsMoving) return null;
 
         target = targetNode;
         if (target == null)
@@ -81,8 +83,7 @@ public class PeopleFindHole : MonoBehaviour
 
         if (FindPath())
         {
-            isMoving = true;
-            HighlightPath();
+            CreateMovingNodes();
             movingNodes.Reverse(); // Đảo ngược để đi từ hiện tại đến đích
 
             //groupPeopleController.PeopleController.MovePeople(movingNodes);
@@ -94,14 +95,14 @@ public class PeopleFindHole : MonoBehaviour
 
 
 
-    void HighlightPath()
+    void CreateMovingNodes()
     {
         Node node = target;
 
         int i = 0;
         while (node != null && node != player)
         {
-            HighlightNode(node, Color.red);
+            //HighlightNode(node, Color.red);
             node = node.PreviousNode;
             movingNodes.Add(node);
 
@@ -113,21 +114,21 @@ public class PeopleFindHole : MonoBehaviour
             }
         }
 
-        // Tô màu node bắt đầu (player)
-        if (node == player)
-        {
-            HighlightNode(node, Color.green);
-        }
+        //// Tô màu node bắt đầu (player)
+        //if (node == player)
+        //{
+        //    HighlightNode(node, Color.green);
+        //}
     }
 
-    void HighlightNode(Node node, Color color)
-    {
-        var renderer = node.GetComponent<Renderer>();
-        if (renderer != null)
-        {
-            renderer.material.color = color;
-        }
-    }
+    //void HighlightNode(Node node, Color color)
+    //{
+    //    var renderer = node.GetComponent<Renderer>();
+    //    if (renderer != null)
+    //    {
+    //        renderer.material.color = color;
+    //    }
+    //}
 
     bool FindPath()
     {

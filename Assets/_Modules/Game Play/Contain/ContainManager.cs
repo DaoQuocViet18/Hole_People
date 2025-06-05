@@ -48,7 +48,7 @@ public class ContainManager : Singleton<ContainManager>
     public void PutPeopleInContain(Tag tagPeople, GameObject parentObj)
     {
         // Ưu tiên chứa đúng tag
-        ContainArrangement targetContain = containArrangements.FirstOrDefault(c => c.TagContain == tagPeople);
+        ContainArrangement targetContain = containArrangements.FirstOrDefault(c => c.TagContain == tagPeople && c.ContainBlank > 0);
         // Nếu không có, chọn container chưa gán tag
         if (targetContain == null)
             targetContain = containArrangements.FirstOrDefault(c => c.TagContain == Tag.None);

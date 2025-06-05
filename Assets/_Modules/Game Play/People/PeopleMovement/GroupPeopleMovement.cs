@@ -58,7 +58,9 @@ public class GroupPeopleMovement : MonoBehaviour
         {
             people.Moving(movingNodes);
 
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.2f);
         }
+
+        PeopleFindHole.IsMoving = true;
     }
 }

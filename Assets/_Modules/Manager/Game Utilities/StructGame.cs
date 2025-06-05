@@ -13,6 +13,19 @@ public enum Tag
     Green
 }
 
+public enum Kind
+{
+    Contain,
+    EntryHole,
+    FinishHole
+}
+
+public enum Side
+{
+    Left,
+    Right
+}
+
 [System.Serializable]
 public struct FinishHoleSpawnInfo
 {
