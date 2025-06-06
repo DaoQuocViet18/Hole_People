@@ -45,24 +45,35 @@ public class ContainManager : Singleton<ContainManager>
             .ToArray();
     }
 
-    public void PutPeopleInContain(Tag tagPeople, GameObject parentObj)
+    public void PutPeopleInContain(Tag tagPeople, List<GameObject> parentObjs)
     {
+        if (parentObjs == null || parentObjs.Count == 0)
+            return;
+
         // Ưu tiên chứa đúng tag
-        ContainArrangement targetContain = containArrangements.FirstOrDefault(c => c.TagContain == tagPeople && c.ContainBlank > 0);
+        ContainArrangement targetContain = containArrangements
+            .FirstOrDefault(c => c.TagContain == tagPeople && c.ContainBlank > 0);
         // Nếu không có, chọn container chưa gán tag
         if (targetContain == null)
             targetContain = containArrangements.FirstOrDefault(c => c.TagContain == Tag.None);
 
-        // Nếu vẫn không có, cho vào end game
         if (targetContain != null)
         {
             targetContain.TagContain = tagPeople;
-            targetContain.GroupPeople.Add(parentObj);
+            foreach (var parentObj in parentObjs)
+            {
+                if (parentObj != null)
+                    targetContain.GroupPeople.Add(parentObj);
+            }
             targetContain.Arrangement();
         }
         else if (containEndGame != null)
         {
-            containEndGame.GroupPeople.Add(parentObj);
+            foreach (var parentObj in parentObjs)
+            {
+                if (parentObj != null)
+                    containEndGame.GroupPeople.Add(parentObj);
+            }
             containEndGame.Arrangement();
         }
         else
@@ -70,5 +81,6 @@ public class ContainManager : Singleton<ContainManager>
             Debug.LogWarning("Không tìm thấy nơi để chứa người.");
         }
     }
+
 
 }

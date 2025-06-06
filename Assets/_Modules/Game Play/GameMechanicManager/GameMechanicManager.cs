@@ -9,29 +9,34 @@ using static EventDefine;
 public class GameMechanicManager : Singleton<GameMechanicManager>
 {
     [SerializeField] private GroupedPeopleCtrl groupedPeopleCtrl;
-
     [SerializeField] private Tag[] mainFinishHoles = new Tag[2];
     [SerializeField] private Tag[] containes = new Tag[4];
     [SerializeField] private int numberFinishHole = 0;
     [SerializeField] private int numberContain = 0;
-    [SerializeField] private int numberGroup => numberFinishHole + numberContain;
+    private int numberGroup => numberFinishHole + numberContain;
+
     protected override void LoadComponents()
     {
+        // Khởi tạo tham chiếu đến GroupedPeopleCtrl
         groupedPeopleCtrl = GetComponent<GroupedPeopleCtrl>();
     }
 
     private void Start()
     {
+        // Tải danh sách tag của các hố chính và container từ các Manager
         LoadListTag();
     }
+
     private void LoadListTag()
     {
+        // Cập nhật mainFinishHoles và containes
         mainFinishHoles = FinishHoleManager.Instance.FinishHoleCtrl.ExportTagFinishHole();
         containes = ContainManager.Instance.ExportTagContain();
     }
 
     private void OnEnable()
     {
+        // Đăng ký sự kiện
         EventDispatcher.Add<OnPeopleRun>(OnPeopleRun);
         EventDispatcher.Add<OnEntryHoleTouch>(OnEntryHoleTouch);
         EventDispatcher.Add<OnChangeMainHole>(OnChangeMainHole);
@@ -39,6 +44,7 @@ public class GameMechanicManager : Singleton<GameMechanicManager>
 
     private void OnDisable()
     {
+        // Hủy đăng ký sự kiện
         EventDispatcher.Remove<OnPeopleRun>(OnPeopleRun);
         EventDispatcher.Remove<OnEntryHoleTouch>(OnEntryHoleTouch);
         EventDispatcher.Remove<OnChangeMainHole>(OnChangeMainHole);
@@ -46,10 +52,11 @@ public class GameMechanicManager : Singleton<GameMechanicManager>
 
     private void OnPeopleRun(IEventParam param)
     {
+        // Xử lý khi có nhóm người bắt đầu chạy và tính toán số chỗ còn trống
         if (param is not OnPeopleRun peopleRunEvent) return;
         if (!Enum.TryParse(peopleRunEvent.tag, true, out Tag tagHole)) return;
 
-        GroupOfPeople group = groupedPeopleCtrl.GroupedPeopleInGame.Find(g => g.tag == tagHole);
+        var group = groupedPeopleCtrl.GroupedPeopleInGame.FirstOrDefault(g => g.tag == tagHole);
         if (group == null || group.groupPeople.Count == 0)
         {
             Debug.LogWarning($"[PeopleManager] No people found for tag '{tagHole}'");
@@ -58,188 +65,146 @@ public class GameMechanicManager : Singleton<GameMechanicManager>
 
         numberFinishHole = 0;
         numberContain = 0;
-        FinishHoleManager fhManager = FinishHoleManager.Instance;
+        var fhCtrl = FinishHoleManager.Instance.FinishHoleCtrl;
 
-        if (fhManager.FinishHoleCtrl.MainHoleLeft != null && fhManager.FinishHoleCtrl.MainHoleLeft.tag == peopleRunEvent.tag)
-            numberFinishHole += fhManager.FinishHoleCtrl.LeftFHInfo.holeBlankGroups;
+        if (fhCtrl.MainHoleLeft != null && fhCtrl.MainHoleLeft.tag.Equals(peopleRunEvent.tag, StringComparison.OrdinalIgnoreCase))
+            numberFinishHole += fhCtrl.LeftFHInfo.holeBlankGroups;
+        if (fhCtrl.MainHoleRight != null && fhCtrl.MainHoleRight.tag.Equals(peopleRunEvent.tag, StringComparison.OrdinalIgnoreCase))
+            numberFinishHole += fhCtrl.RightFHInfo.holeBlankGroups;
 
-        if (fhManager.FinishHoleCtrl.MainHoleRight != null && fhManager.FinishHoleCtrl.MainHoleRight.tag == peopleRunEvent.tag)
-            numberFinishHole += fhManager.FinishHoleCtrl.RightFHInfo.holeBlankGroups;
-
-        // Contain logic: ưu tiên container cùng tag (và còn chỗ trống), nếu không có thì tìm container None (nếu còn chỗ trống) và cộng 8
-        ContainArrangement containWithTag = ContainManager.Instance.ContainArrangements.FirstOrDefault(c => c.TagContain == tagHole && c.ContainBlank > 0);
+        var containWithTag = ContainManager.Instance.ContainArrangements
+            .FirstOrDefault(c => c.TagContain == tagHole && c.ContainBlank > 0);
         if (containWithTag != null)
         {
             numberContain += containWithTag.ContainBlank;
         }
         else
         {
-            ContainArrangement emptyContain = ContainManager.Instance.ContainArrangements
+            var emptyContain = ContainManager.Instance.ContainArrangements
                 .FirstOrDefault(c => c.TagContain == Tag.None && c.ContainBlank > 0);
             if (emptyContain != null)
                 numberContain += 8;
         }
 
-        // Di chuyển nhóm đến đích
         PeopleManager.Instance.GroupPeopleFindHole(group.groupPeople, peopleRunEvent.target, numberGroup);
     }
 
     private void OnEntryHoleTouch(IEventParam param)
     {
-        if (param is not OnEntryHoleTouch entryHoleTouchEvent) return;
-        if (!Enum.TryParse(entryHoleTouchEvent.tag, true, out Tag tagHole)) return;
+        // Xác định các parent đã hoàn thành di chuyển và đưa họ vào kết thúc game
+        if (param is not OnEntryHoleTouch entryEvent) return;
+        if (!Enum.TryParse(entryEvent.tag, true, out Tag tagHole)) return;
 
-        List<GameObject> listParentPeople = entryHoleTouchEvent.groupParentPeople;
+        var uniqueParents = new HashSet<Transform>();
+        var parentsToFinish = new List<GameObject>();
 
-        HashSet<Transform> uniqueParents = new();
-        List<GameObject> parentsToFinishGame = new();
-
-        foreach (GameObject parentPeople in listParentPeople)
+        foreach (var obj in entryEvent.groupParentPeople)
         {
-            if (parentPeople == null) continue;
+            if (obj?.transform.parent is not Transform parent || !uniqueParents.Add(parent))
+                continue;
 
-            Transform parentTransform = parentPeople.transform.parent;
-            if (parentTransform == null || !uniqueParents.Add(parentTransform))
-                continue; // Skip nếu null hoặc đã xử lý
-
-            // Lấy tất cả PeopleMovement trong các con của parent
-            PeopleMovement[] childrenMovements = parentTransform.GetComponentsInChildren<PeopleMovement>();
-
-            bool allMoved = true;
-            foreach (PeopleMovement movement in childrenMovements)
-            {
-                if (movement == null || !movement.Moved)
-                {
-                    allMoved = false;
-                    break;
-                }
-            }
-
-            if (allMoved)
-            {
-                parentsToFinishGame.Add(parentTransform.gameObject);
-            }
+            var children = parent.GetComponentsInChildren<PeopleMovement>(true);
+            if (children.All(m => m != null && m.Moved))
+                parentsToFinish.Add(parent.gameObject);
         }
 
-        if (parentsToFinishGame.Count > 0)
-        {
-            foreach (var parentObj in parentsToFinishGame)
-            {
-                BringIntoFinishGame(parentObj);
-            }
-        }
+        if (parentsToFinish.Count > 0)
+            BringIntoFinishGame(parentsToFinish);
     }
 
     private void OnChangeMainHole(IEventParam param)
     {
+        // Cập nhật lại tag các hố chính và container khi hố chính thay đổi
         mainFinishHoles = FinishHoleManager.Instance.FinishHoleCtrl.ExportTagFinishHole();
         containes = ContainManager.Instance.ExportTagContain();
-        
         PutContainToFinishHole();
     }
 
-    public void BringIntoFinishGame(GameObject parentObj)
+    public void BringIntoFinishGame(List<GameObject> listParents)
     {
-        if (parentObj == null) return;
+        // Di chuyển các parent khỏi nhóm In-Game, thêm vào nhóm Finish-Game, sau đó xử lý hố hoặc container
+        if (listParents == null || listParents.Count == 0) return;
 
-        groupedPeopleCtrl.RemoveFromGroup(groupedPeopleCtrl.GroupedPeopleInGame, parentObj);
+        groupedPeopleCtrl.RemoveFromGroup(groupedPeopleCtrl.GroupedPeopleInGame, listParents);
+        var tagString = listParents[0].tag;
+        if (!Enum.TryParse(tagString, out Tag tag)) return;
 
-        if (!Enum.TryParse(parentObj.tag, out Tag tag)) return;
-        groupedPeopleCtrl.AddToGroup(groupedPeopleCtrl.GroupedPeopleFinishGame, tag, parentObj);
-
-        PutInFinishHoleOrContain(tag, parentObj);
+        groupedPeopleCtrl.AddToGroup(groupedPeopleCtrl.GroupedPeopleFinishGame, tag, listParents);
+        PutInFinishHoleOrContain(tag, listParents);
     }
 
-    private void PutInFinishHoleOrContain(Tag tag, GameObject parentObj)
+    private void PutInFinishHoleOrContain(Tag tag, List<GameObject> parents)
     {
-        // Kiểm tra nếu tag phù hợp với mainFinishHoles
+        // Đưa các parent vào hố chính trước nếu còn chỗ, sau đó vào container nếu cần
+        if (parents == null || parents.Count == 0) return;
+
         if (mainFinishHoles.Contains(tag) && numberFinishHole > 0)
         {
-            numberFinishHole--;
-            FinishHoleManager.Instance.PutPeopleInFinishHole(parentObj, Kind.EntryHole);
-            groupedPeopleCtrl.RemoveFromGroup(groupedPeopleCtrl.GroupedPeopleFinishGame, parentObj);
-        }
-        // Nếu không, kiểm tra nếu tag thuộc containes hoặc containes có chỗ trống (Tag.None)
-        else if (containes.Any(t => t == tag || t == Tag.None) && numberContain > 0)
-        {
-            numberContain--;
-            ContainManager.Instance.PutPeopleInContain(tag, parentObj);
+            int finishCount = Mathf.Min(numberFinishHole, parents.Count);
+            var finishList = parents.Take(finishCount).ToList();
+            numberFinishHole -= finishCount;
 
+            FinishHoleManager.Instance.PutPeopleFromEntryHoleToFinishHole(finishList);
+            groupedPeopleCtrl.RemoveFromGroup(groupedPeopleCtrl.GroupedPeopleFinishGame, finishList);
+            parents.RemoveAll(p => finishList.Contains(p));
         }
+
+        if (parents.Count > 0 && containes.Any(t => t == tag || t == Tag.None) && numberContain > 0)
+        {
+            int containCount = Mathf.Min(numberContain, parents.Count);
+            var containList = parents.Take(containCount).ToList();
+            numberContain -= containCount;
+
+            ContainManager.Instance.PutPeopleInContain(tag, containList);
+            groupedPeopleCtrl.RemoveFromGroup(groupedPeopleCtrl.GroupedPeopleFinishGame, containList);
+            parents.RemoveAll(p => containList.Contains(p));
+        }
+
         mainFinishHoles = FinishHoleManager.Instance.FinishHoleCtrl.ExportTagFinishHole();
         containes = ContainManager.Instance.ExportTagContain();
     }
 
     private void PutContainToFinishHole()
     {
-        // 1) Tìm tag chung giữa mainFinishHoles và containes
-        Tag matchingTag = Tag.None;
+        // Chuyển nhóm từ container vào hố chính khi tag khớp và còn chỗ trống
+        Tag matchTag = Tag.None;
         for (int i = 0; i < mainFinishHoles.Length; i++)
         {
-            if (mainFinishHoles[i] == Tag.None)
-                continue;
-
-            for (int j = 0; j < containes.Length; j++)
+            if (mainFinishHoles[i] == Tag.None) continue;
+            if (containes.Contains(mainFinishHoles[i]))
             {
-                if (mainFinishHoles[i] == containes[j])
-                {
-                    matchingTag = mainFinishHoles[i];
-                    break;
-                }
-            }
-            if (matchingTag != Tag.None)
+                matchTag = mainFinishHoles[i];
                 break;
+            }
         }
+        if (matchTag == Tag.None) return;
 
-        if (matchingTag == Tag.None)
-            return;
+        int mainIndex = Array.IndexOf(mainFinishHoles, matchTag);
+        int containIndex = Array.IndexOf(containes, matchTag);
+        if (mainIndex < 0 || containIndex < 0) return;
 
-        int indexMain = Array.IndexOf(mainFinishHoles, matchingTag);
-        int indexContain = Array.IndexOf(containes, matchingTag);
-        if (indexMain < 0 || indexContain < 0)
-            return;
-
-        // 2) Lấy số blank còn thực tế ở main hole (sau khi gán tag)
-        int mainBlank = (indexMain == 0)
+        int mainBlank = mainIndex == 0
             ? FinishHoleManager.Instance.FinishHoleCtrl.LeftFHInfo.holeBlankGroups
             : FinishHoleManager.Instance.FinishHoleCtrl.RightFHInfo.holeBlankGroups;
+        var containerData = ContainManager.Instance.ContainArrangements[containIndex];
+        int containCount = containerData.GroupPeople.Count;
+        if (mainBlank <= 0 || containCount == 0) return;
 
-        var containData = ContainManager.Instance.ContainArrangements[indexContain];
-        int containCount = containData.GroupPeople.Count;
-        if (mainBlank <= 0 || containCount == 0)
-            return;
-
-        // 3) Xác định số người cần lấy (không vượt quá số chỗ hố chính và không vượt quá số người trong container)
         int takeCount = Mathf.Min(mainBlank, containCount);
+        var toMove = containerData.GroupPeople.GetRange(containCount - takeCount, takeCount);
+        containerData.GroupPeople.RemoveRange(containCount - takeCount, takeCount);
 
-        // 4) Lấy phần tử từ cuối danh sách container
-        List<GameObject> listPeopleInContain = containData.GroupPeople
-            .GetRange(containCount - takeCount, takeCount);
-
-        // 5) Xóa những phần tử vừa lấy khỏi container
-        containData.GroupPeople.RemoveRange(containCount - takeCount, takeCount);
-
-        //Debug.Log($"matchingTag: {matchingTag} - mainBlank: {mainBlank} - listPeopleInContain: {listPeopleInContain.Count}");
-
-        // 7) Chuyển từng người vào finish hole
-        foreach (GameObject person in listPeopleInContain)
+        if (mainIndex == 0)
         {
-            FinishHoleManager.Instance.PutPeopleInFinishHole(person, Kind.Contain);
-        }
-
-        // 6) Cập nhật lại số chỗ trống của hố chính trước khi gửi họ vào
-        if (indexMain == 0)
-        {
-            var leftInfo = FinishHoleManager.Instance.FinishHoleCtrl.LeftFHInfo;
-            leftInfo.holeBlankGroups -= takeCount;
+            var info = FinishHoleManager.Instance.FinishHoleCtrl.LeftFHInfo;
+            info.holeBlankGroups -= takeCount;
+            FinishHoleManager.Instance.PutPeopleFromContainToFinishHole(toMove, Side.Left);
         }
         else
         {
-            var rightInfo = FinishHoleManager.Instance.FinishHoleCtrl.RightFHInfo;
-            rightInfo.holeBlankGroups -= takeCount;
+            var info = FinishHoleManager.Instance.FinishHoleCtrl.RightFHInfo;
+            info.holeBlankGroups -= takeCount;
+            FinishHoleManager.Instance.PutPeopleFromContainToFinishHole(toMove, Side.Right);
         }
-
-        //Debug.Log($"mainFinishHoles[{indexMain}]: Blank còn lại = {mainBlank - takeCount}, Đã chuyển: {takeCount}");
     }
-
 }

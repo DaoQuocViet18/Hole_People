@@ -37,7 +37,7 @@ public class PeopleMovement : CtrlMonoBehaviour
     public IEnumerator MovingTowards(Vector3 targetPosition)
     {
         moved = false;
-        //bool movedToThreshold = false;
+        bool movedToThreshold = false;
 
         // Đảm bảo giữ nguyên chiều cao y
         targetPosition.y = transform.position.y;
@@ -50,24 +50,23 @@ public class PeopleMovement : CtrlMonoBehaviour
             transform.rotation = lookRotation;
         }
 
-        //float distance = Vector3.Distance(transform.position, targetPosition);
+        float distance = Vector3.Distance(transform.position, targetPosition);
 
-        //if (distance > 3f)
-        //{
-        //    // Tính vị trí dừng cách target 3f
-        //    Vector3 thresholdPos = targetPosition - direction * 3f;
-        //    float distToThreshold = Vector3.Distance(transform.position, thresholdPos);
-        //    float duration = (distToThreshold / MoveSpeed) * SlowDownFactor;
+        if (distance > 3f)
+        {
+            // Tính vị trí dừng cách target 3f
+            Vector3 thresholdPos = targetPosition - direction * 3f;
+            float distToThreshold = Vector3.Distance(transform.position, thresholdPos);
+            float duration = (distToThreshold / MoveSpeed) * SlowDownFactor;
 
-        //    // Hủy tween cũ trước khi tạo tween mới
-        //    transform.DOKill();
-        //    Debug.Log($"start {gameObject.name}");
-        //    transform.DOMove(thresholdPos, duration)
-        //             .SetEase(Ease.Linear)
-        //             .OnComplete(() => { movedToThreshold = true; Debug.Log($"done {gameObject.name}"); }); 
+            // Hủy tween cũ trước khi tạo tween mới
+            transform.DOKill();
+            transform.DOMove(thresholdPos, duration)
+                     .SetEase(Ease.Linear)
+                     .OnComplete(() => { movedToThreshold = true; });
 
-        //    yield return new WaitUntil(() => movedToThreshold);
-        //}
+            yield return new WaitUntil(() => movedToThreshold);
+        }
 
         // Hủy tween (nếu có) trước khi nhảy
         transform.DOKill();
@@ -134,7 +133,7 @@ public class PeopleMovement : CtrlMonoBehaviour
         if (isFalling) return;
 
         GameObject other = collision.gameObject;
-        if (other.layer == LayerMask.NameToLayer("Finish Hole") || other.layer == LayerMask.NameToLayer("Hole") && other.CompareTag(gameObject.tag))
+        if (other.layer == LayerMask.NameToLayer("Hole") && other.CompareTag(gameObject.tag))
         {
             isFalling = true;
             JumpIntoHole(target);

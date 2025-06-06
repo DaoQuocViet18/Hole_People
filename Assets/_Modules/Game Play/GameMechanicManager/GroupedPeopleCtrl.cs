@@ -74,10 +74,11 @@ public class GroupedPeopleCtrl : CtrlMonoBehaviour
         }
     }
 
-    /// Thêm một GameObject vào nhóm có tag tương ứng trong danh sách.
-    public void AddToGroup(List<GroupOfPeople> groupList, Tag tag, GameObject obj)
+    /// Thêm một list GameObject vào nhóm có tag tương ứng trong danh sách.
+    public void AddToGroup(List<GroupOfPeople> groupList, Tag tag, List<GameObject> objs)
     {
-        if (obj == null) return;
+        if (objs == null || objs.Count == 0)
+            return;
 
         var group = groupList.Find(g => g.tag == tag);
         if (group == null)
@@ -86,21 +87,36 @@ public class GroupedPeopleCtrl : CtrlMonoBehaviour
             groupList.Add(group);
         }
 
-        if (!group.groupPeople.Contains(obj))
+        foreach (GameObject obj in objs)
         {
-            group.groupPeople.Add(obj);
+            if (obj == null)
+                continue;
+
+            if (!group.groupPeople.Contains(obj))
+            {
+                group.groupPeople.Add(obj);
+            }
         }
     }
 
-    /// Gỡ GameObject khỏi nhóm chứa nó trong danh sách.
-    public void RemoveFromGroup(List<GroupOfPeople> groupList, GameObject obj)
+
+    /// Gỡ list GameObject khỏi nhóm chứa nó trong danh sách.
+    public void RemoveFromGroup(List<GroupOfPeople> groupList, List<GameObject> objs)
     {
-        if (obj == null) return;
+        if (objs == null || objs.Count == 0)
+            return;
 
-        foreach (var group in groupList)
+        foreach (GameObject obj in objs)
         {
-            if (group.groupPeople.Remove(obj))
-                break;
+            if (obj == null)
+                continue;
+
+            foreach (var group in groupList)
+            {
+                if (group.groupPeople.Remove(obj))
+                    break;
+            }
         }
     }
+
 }

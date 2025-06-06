@@ -25,7 +25,7 @@ public class FinishHoleCtrl : CtrlMonoBehaviour
     public FinishHoleSpawnInfo LeftFHSpawnInfo => leftFHSpawnInfo;
     public FinishHoleSpawnInfo RightFHSpawnInfo => rightFHSpawnInfo;
 
-    // Initialize default values when resetting the component
+    // Initialize default hole and spawn settings when resetting this component
     protected override void ResetValue()
     {
         leftFHInfo.holeBlankGroups = 4;
@@ -37,7 +37,7 @@ public class FinishHoleCtrl : CtrlMonoBehaviour
         rightFHSpawnInfo.SpacingZ = 7f;
     }
 
-    // Spawn holes from prefabs and assign the first as mainHole
+    // Spawn hole instances from provided prefabs and assign the first as mainHoleLeft and mainHoleRight
     private void Start()
     {
         leftFHInfo.holeInstances = SpawnHoles(leftFHInfo.holePrefabs, leftFHSpawnInfo);
@@ -49,27 +49,27 @@ public class FinishHoleCtrl : CtrlMonoBehaviour
             mainHoleRight = rightFHInfo.holeInstances[0];
     }
 
-    // Create and return instances of hole prefabs based on spawn config
+    // Instantiate a list of hole GameObjects based on prefab list and spawn configuration
     private List<GameObject> SpawnHoles(List<GameObject> prefabs, FinishHoleSpawnInfo config)
     {
         var instances = new List<GameObject>();
-        Vector3 pos = config.StartPosition;
+        var position = config.StartPosition;
 
         foreach (var prefab in prefabs)
         {
-            var instance = Instantiate(prefab, pos, Quaternion.identity);
+            var instance = Instantiate(prefab, position, Quaternion.identity);
             instances.Add(instance);
-            pos.z -= config.SpacingZ;
+            position.z -= config.SpacingZ;
         }
 
         return instances;
     }
 
-    // Return the tags of the two current main holes
+    // Return an array of Tags corresponding to current mainHoleLeft and mainHoleRight
     public Tag[] ExportTagFinishHole()
     {
-        Tag leftTag = Tag.None;
-        Tag rightTag = Tag.None;
+        var leftTag = Tag.None;
+        var rightTag = Tag.None;
 
         if (mainHoleLeft != null && System.Enum.TryParse(mainHoleLeft.tag, out Tag parsedLeft))
             leftTag = parsedLeft;
@@ -79,94 +79,134 @@ public class FinishHoleCtrl : CtrlMonoBehaviour
         return new[] { leftTag, rightTag };
     }
 
-    // Replace the current hole: deactivate the old one, promote the next, move others into position, reset holeBlankGroups
-    public IEnumerator ChangeMainHole(GameObject hole, Side side)
+    // Handle replacing the main hole when a group enters via an entry hole, decrementing holeBlankGroups or swapping holes
+    public IEnumerator ChangeMainHoleByEntryHole(Side side)
     {
-        GameObject currentHole = (side == Side.Left) ? mainHoleLeft : mainHoleRight;
-        FinishHoleInfo info = (side == Side.Left) ? leftFHInfo : rightFHInfo;
-        FinishHoleSpawnInfo spawnInfo = (side == Side.Left) ? leftFHSpawnInfo : rightFHSpawnInfo;
+        var currentHole = (side == Side.Left) ? mainHoleLeft : mainHoleRight;
+        var info = (side == Side.Left) ? leftFHInfo : rightFHInfo;
+        var spawnInfo = (side == Side.Left) ? leftFHSpawnInfo : rightFHSpawnInfo;
 
-        // Nếu vẫn còn >1 nhóm trống, chỉ giảm rồi dừng
+        // If more than one blank group remains, decrement and exit
         if (info.holeBlankGroups > 1)
         {
             info.holeBlankGroups--;
             yield break;
         }
 
-        // info.holeBlankGroups hiện <= 1, nghĩa là sau lần này sẽ thay hố
-        // Chạy hiệu ứng phóng to–thu nhỏ rồi mới thay hố
+        // Play end-of-hole effect before swapping
         yield return StartCoroutine(EffectHoleEnd(currentHole, 0.5f));
 
-        // Nếu chỉ còn 1 hoặc 0 instance, đóng hố rồi dừng
+        // If no replacement instances remain, exit
         if (info.holeInstances.Count <= 1)
-        {
-            //Debug.LogWarning("No more holes to replace.");
-            //currentHole.SetActive(false);
             yield break;
-        }
 
-        // Lưu vị trí hố cũ trước khi xóa
-        Vector3 basePos = currentHole.transform.position;
+        var basePos = currentHole.transform.position;
 
-        // Ẩn và loại bỏ hố cũ
+        // Deactivate and remove the current hole
         currentHole.SetActive(false);
         info.holeInstances.RemoveAt(0);
 
-        // Chọn hố mới (phần tử đầu trong danh sách), kích hoạt nếu cần
-        GameObject newMain = info.holeInstances[0];
+        // Promote the next instance as new main hole
+        var newMain = info.holeInstances[0];
         if (!newMain.activeSelf)
             newMain.SetActive(true);
 
-        // Tween hố mới về đúng vị trí của hố cũ
+        // Move new main hole into the saved base position
         StartCoroutine(MoveToPosition(newMain, basePos, moveDuration));
 
-        // Cập nhật biến mainHoleLeft / mainHoleRight cho đúng side
         if (side == Side.Left)
             mainHoleLeft = newMain;
         else
             mainHoleRight = newMain;
 
-        // Di chuyển các hố còn lại xuống sau hố chính mới, căn theo SpacingZ
-        for (int i = 1; i < info.holeInstances.Count; i++)
+        // Reposition remaining holes behind the new main
+        for (var i = 1; i < info.holeInstances.Count; i++)
         {
-            GameObject h = info.holeInstances[i];
-            if (!h.activeSelf)
-                h.SetActive(true);
+            var hole = info.holeInstances[i];
+            if (!hole.activeSelf)
+                hole.SetActive(true);
 
-            Vector3 targetPos = new Vector3(
+            var targetPos = new Vector3(
                 basePos.x,
                 basePos.y,
                 basePos.z - spawnInfo.SpacingZ * i
             );
-            StartCoroutine(MoveToPosition(h, targetPos, moveDuration));
+            StartCoroutine(MoveToPosition(hole, targetPos, moveDuration));
         }
 
-        // Hủy hố cũ
         Destroy(currentHole);
-
-        // Reset lại holeBlankGroups cho side này
         info.holeBlankGroups = 4;
     }
 
-
-
-    // Animate the hole scaling up and back down over the given duration
-    private IEnumerator EffectHoleEnd(GameObject hole, float duration)
+    // Handle replacing the main hole when triggered by container logic, playing effect and swapping as needed
+    public IEnumerator ChangeMainHoleByCotain(Side side)
     {
-        Vector3 originalScale = hole.transform.localScale;
-        Vector3 targetScale = originalScale * 1.2f;
+        var currentHole = (side == Side.Left) ? mainHoleLeft : mainHoleRight;
+        var info = (side == Side.Left) ? leftFHInfo : rightFHInfo;
+        var spawnInfo = (side == Side.Left) ? leftFHSpawnInfo : rightFHSpawnInfo;
 
-        Sequence seq = DOTween.Sequence();
-        seq.Append(hole.transform.DOScale(targetScale, duration / 2f).SetEase(Ease.OutQuad));
-        seq.Append(hole.transform.DOScale(originalScale, duration / 2f).SetEase(Ease.InQuad));
+        // Play end-of-hole effect before swapping
+        yield return StartCoroutine(EffectHoleEnd(currentHole, 0.5f));
 
-        yield return seq.WaitForCompletion();
+        // If no replacement instances remain, exit
+        if (info.holeInstances.Count <= 1)
+            yield break;
+
+        var basePos = currentHole.transform.position;
+
+        // Deactivate and remove the current hole
+        currentHole.SetActive(false);
+        info.holeInstances.RemoveAt(0);
+
+        // Promote the next instance as new main hole
+        var newMain = info.holeInstances[0];
+        if (!newMain.activeSelf)
+            newMain.SetActive(true);
+
+        // Move new main hole into the saved base position
+        StartCoroutine(MoveToPosition(newMain, basePos, moveDuration));
+
+        if (side == Side.Left)
+            mainHoleLeft = newMain;
+        else
+            mainHoleRight = newMain;
+
+        // Reposition remaining holes behind the new main
+        for (var i = 1; i < info.holeInstances.Count; i++)
+        {
+            var hole = info.holeInstances[i];
+            if (!hole.activeSelf)
+                hole.SetActive(true);
+
+            var targetPos = new Vector3(
+                basePos.x,
+                basePos.y,
+                basePos.z - spawnInfo.SpacingZ * i
+            );
+            StartCoroutine(MoveToPosition(hole, targetPos, moveDuration));
+        }
+
+        Destroy(currentHole);
+        info.holeBlankGroups = 4;
     }
 
-    // Tween an object from its current position to targetPos over duration seconds
+    // Animate a hole scaling up and down to indicate it is ending
+    private IEnumerator EffectHoleEnd(GameObject hole, float duration)
+    {
+        var originalScale = hole.transform.localScale;
+        var targetScale = originalScale * 1.2f;
+
+        var sequence = DOTween.Sequence();
+        sequence.Append(hole.transform.DOScale(targetScale, duration / 2f).SetEase(Ease.OutQuad));
+        sequence.Append(hole.transform.DOScale(originalScale, duration / 2f).SetEase(Ease.InQuad));
+
+        yield return sequence.WaitForCompletion();
+    }
+
+    // Smoothly move a GameObject from its current position to the specified target over given duration, then dispatch an event
     private IEnumerator MoveToPosition(GameObject obj, Vector3 targetPos, float duration)
     {
-        Vector3 startPos = obj.transform.position;
+        var startPos = obj.transform.position;
         float elapsed = 0f;
 
         while (elapsed < duration)
@@ -177,8 +217,6 @@ public class FinishHoleCtrl : CtrlMonoBehaviour
         }
 
         obj.transform.position = targetPos;
-
-        // Gửi event thông báo đã thay hố
         EventDispatcher.Dispatch(new EventDefine.OnChangeMainHole());
     }
 }
